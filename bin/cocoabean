@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+require 'cocoa_bean'
+
+CocoaBean::Command.run(ARGV)
