@@ -1,8 +1,7 @@
-#= require <%= @module_name %>
 #= require view
 #= require view_controller
 
-class ApplicationDelegate extends CB.ApplicationDelegate
+class DEMO.ApplicationDelegate extends CB.ApplicationDelegate
   applicationDidFinishLaunchingWithOptions: (options) ->
-    controller = new <%= @module %>.ViewController()
+    controller = new DEMO.ViewController()
     CB.Window.currentWindow().rootViewController = controller

@@ -1,7 +1,7 @@
 #= require application_delegate
 
 # Full-fleaged application
-CB.run(CB.Application, <%= @module %>.ApplicationDelegate)
+CB.run(application: CB.Application, delegate: <%= @module %>.ApplicationDelegate)
 
 # Simple application
 # CB.run ->
