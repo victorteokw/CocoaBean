@@ -1,4 +1,4 @@
-class CB.Window
+class CB.Window extends CB.View
 
   @currentWindow: () ->
     @__current ||= new CB.Window
@@ -11,20 +11,19 @@ class CB.Window
     get: -> $(window).width()
 
   @property "rootViewController",
-    get: -> @_keyViewController
-    set: (vc) -> @_keyViewController = vc; this.__setKeyView(vc.view)
+    get: -> @_rootViewController
+    set: (vc) -> @_rootViewController = vc; this.__setRootView(vc.view)
+
+  @property "readonly", "frame",
+    get:
 
   isLong: () -> this.width <= this.height
   isWide: () -> !this.isLong()
 
-  __setKeyView: (view) ->
-   if $("body").length
-     $("body").empty()
-   view.__loadLayer() # This call has bug
-   view.__syncView() # This call may has bug
-   view.layout()
-   view.show = true
+  __setRootView: (view) ->
    @_keyView = view
-   $(window).off("resize")
-   $(window).resize ->
-     view.layout()
+   CB.Renderer.sharedRenderer.renderRootViewForWindow(view, this)
+
+  # pragma mark - window as subclass of CB.View
+
+  layoutSubviews: () ->

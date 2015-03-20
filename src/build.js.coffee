@@ -1,9 +1,14 @@
 #= require header
 #= require support/accessor
+#= require support/dispatch
+#= require view/point
+#= require view/size
+#= require view/rect
 #= require view/color
 #= require view/metrics
-#= require view/window
 #= require view/view
+#= require view/scroll_view
+#= require view/window
 #= require view/renderer
 #= require view_controller/view_controller
 #= require application/application

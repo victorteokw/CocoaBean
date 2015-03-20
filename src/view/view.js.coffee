@@ -1,44 +1,20 @@
+# Base class for all view.
+# This view is an generic empty view. This view is suitable for a container.
+# For text, button and other feature, use subclasses of this class instead.
+#
 class CB.View
-  # initialize
+  # initializer
   constructor: () ->
-    @subviews = [] # for view hirarchy
+    @subviews = [] # view hirarchy
 
-    @layer = null # for DOM and jQuery backed layer
-    @useBodyAsLayer = false
+    @layer = null # DOM and jQuery backed layer
+
+    @unsyncedStyles = {} # for css
 
     @eventDelegate = null # for user event
     @__events = [] # for user event
 
-    @__css = {} # for css
-
-  # load view
-  __loadLayer: () ->
-    if @useBodyAsLayer
-      @layer = $("body")
-      @layer.css("position", "relative")
-      @layer.css("margin", "0px")
-    else
-      @layer = this.__layer()
-      @layer.css("position", "absolute")
-    this.__syncCSS()
-    this.__loadGestures()
-    for view in @subviews
-      view.__loadLayer()
-
-  __unloadLayer: () ->
-    this.__unloadGestures()
-    @layer.empty()
-    @layer = null
-    for view in @subviews
-      view.layer = null
-
-  __syncView: () ->
-    if CB.Window.currentWindow().keyView == this and !@useBodyAsLayer
-      $("body").append(@layer)
-    for view in @subviews
-      view.layer.appendTo(@layer)
-      view.show = true
-      view.__syncView()
+    @delegate = CB.Renderer.sharedRenderer()
 
   # @todo Bugs exist.
   # Need to modify.
@@ -56,10 +32,26 @@ class CB.View
     for event in events
       @layer.off event
 
-  __layer: () ->
+  layerDescription: () ->
     $("<div></div>")
 
   # layout
+  @property "frame"
+  @property "bounds"
+  @property "center"
+  # @property "transform" # Future implementation
+  @property "alpha"
+  @property "backgroundColor"
+
+  layoutSubviews: () ->
+    @layer.css("top", @frame.origin.x)
+    @layer.css("left", @frame.origin.y)
+    @layer.width(@frame.size.width)
+    @layer.height(@frame.size.height)
+    for subview in @subviews
+      subview.layoutSubviews()
+
+  # Old layout implementation
   __calculateOffset: (offset, functionName, relativeFName) -> # Need more test
     if @useBodyAsLayer
       return '0px'
