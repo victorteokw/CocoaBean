@@ -2,6 +2,8 @@
 /dist
 /test/**/*.js
 
+# Emacs plugin
+.tern-port
 
 # Xcode
 #

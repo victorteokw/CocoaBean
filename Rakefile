@@ -7,6 +7,8 @@ ENV['JASMINE_CONFIG_PATH'] = './test/jasmine.yml'
 # The root directory of Cocoa Bean project
 project_root = File.dirname(__FILE__)
 
+### Generating tasks
+
 # File task for web framework full version
 web_framework_name = 'dist/cocoabean-' + CocoaBean::VERSION + '.js'
 file web_framework_name => Rake::FileList.new('src/**/*.js.coffee') do |t|
@@ -66,6 +68,8 @@ end
 desc "Generate all platforms and versions of distribution."
 task :dist => ['dist:webmin', 'dist:web', 'dist:cocoa', 'dist:cocoatouch']
 
+### Version tasks.
+
 # Set project version with rake.
 desc "Set a specific project version."
 task :version, [:ver] do |t, args|
@@ -100,10 +104,18 @@ task :version, [:ver] do |t, args|
   end
 end
 
+### Test tasks
+
 require 'jasmine'
 load 'jasmine/tasks/jasmine.rake'
 
 namespace :test do
+  directory 'test/dependencies'
+  file 'test/dependencies/jquery-2.1.3.js' => 'test/dependencies' do |t|
+    require 'open-uri'
+    content = open("http://code.jquery.com/jquery-2.1.3.js").read
+    File.open(t.name, 'w') {|f| f.write(content) }
+  end
 
   require 'rake/testtask'
   desc "Test ruby command line interface"
@@ -130,7 +142,7 @@ namespace :test do
       sh "find test -type d -empty -delete"
     end
 
-    task :'do' do
+    task :'do' => ['dist:web'] do
       ENV['JASMINE_CONFIG_PATH'] = './test/jasmine.yml'
       Rake::Task["jasmine"].invoke
     end
@@ -140,9 +152,11 @@ namespace :test do
   end
 
   desc "Test on web environment"
-  task :web => ['web:generate', 'web:do']
+  task :web => ['web:generate','test/dependencies/jquery-2.1.3.js' , 'web:do']
 
 end
+
+### Gem tasks
 
 # Require bundler's gem tasks
 require "bundler/gem_tasks"

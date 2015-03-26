@@ -4,8 +4,8 @@ CB.DispatchOnce ||= (token, code) ->
     code()
     CB.__DispatchOnceTokenTable[token] = true
 
-CB.DispatchAfter ||= (func, time) ->
-  setTimeout(func, time);
+CB.DispatchAfter ||= (func, timeInMillisecond) ->
+  setTimeout(func, timeInMillisecond);
 
 CB.DispatchAsync ||= (func) ->
   setTimeout(func, 0)

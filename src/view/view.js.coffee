@@ -8,7 +8,7 @@
 #
 class CB.View
 
-  # @param [CB.Frame] a frame.
+  # @param [CB.Rect] a frame.
   # @return [CB.View] newly created CB.View
   #
   constructor: (@frame) ->

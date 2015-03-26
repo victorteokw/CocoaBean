@@ -8,13 +8,13 @@ class CB.Renderer
   # @return [CB.Renderer] the renderer singleton
   #
   @sharedRenderer: () ->
-    @__shared ||= new CHESS.VIEW.Renderer
+    @__shared ||= new CB.Renderer
     return @__shared
 
-  @property "currentRootView"
-
   constructor: () ->
-    this.setupDOMBody()
+    # this.setupDOMBody()
+
+  @property "currentRootView"
 
   setupDOMBody: () ->
     CB.DispatchOnce "CB.Renderer.setupDOMBody", ->
@@ -55,8 +55,9 @@ class CB.Renderer
 
   loadLayerForView: (view) ->
     if !view.layer
-      view.layer = view.layerDescription()
-      view.layer.css("position", "absolute")
+      view._layer = view.layerDescription()
+      view._layer.css("position", "absolute")
+    force = false
     if force
       for subview in view.subviews
         this.loadLayerForView(subview)

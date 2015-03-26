@@ -1,4 +1,4 @@
-class CB.Metrics # Fully tested
+class CB.Metrics # Deprecated
   @add: (a, b) ->
     if typeof a == 'number'
       a = a + 'px'

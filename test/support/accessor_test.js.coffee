@@ -5,8 +5,7 @@ class Person extends Object
     get: -> "#{@first} #{@last}"
     set: (name) -> [@first, @last] = name.split ' '
   @property "age"
-  @property "readonly", "gender",
-    get: -> @_gender
+  @property "readonly", "gender"
 
 describe "Property accessor", ->
   person = null
@@ -27,3 +26,6 @@ describe "Property accessor", ->
     expect(person.gender).toBe("male")
   it "throws error when attempting to set readonly property", ->
     expect(-> person.gender = "female").toThrow()
+  it "can change readonly property by set private instance variable", ->
+    person._gender = "female"
+    expect(person.gender).toBe("female")

@@ -1,5 +1,6 @@
 src_files:
   - 'dist/cocoabean-0.0.1.js'
+  - 'test/dependencies/jquery-2.1.3.js'
 spec_files:
   - '**/*[tT]est.js'
 
