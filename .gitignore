@@ -1,5 +1,6 @@
 # CocoaBean
 /dist
+/test/**/*.js
 
 
 # Xcode

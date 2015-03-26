@@ -1,20 +1,139 @@
 # Base class for all view.
-# This view is an generic empty view. This view is suitable for a container.
+# This view is an generic empty view. This view is suitable for a container
+# or a custom drawing view.
 # For text, button and other feature, use subclasses of this class instead.
 #
+# @example Create a view
+#   view = new CB.View()
+#
 class CB.View
-  # initializer
-  constructor: () ->
-    @subviews = [] # view hirarchy
 
-    @layer = null # DOM and jQuery backed layer
+  # @param [CB.Frame] a frame.
+  # @return [CB.View] newly created CB.View
+  #
+  constructor: (@frame) ->
+    @unsyncedStyles = {}
+    @eventDelegate = null
+    @__events = []
 
-    @unsyncedStyles = {} # for css
+  # pragma mark - Render
 
-    @eventDelegate = null # for user event
-    @__events = [] # for user event
+  @property "readonly", "renderDelegate",
+    get: () -> CB.Renderer.sharedRenderer()
 
-    @delegate = CB.Renderer.sharedRenderer()
+  # pragma mark - Layer
+
+  @property "readonly", "layer"
+
+  layerDescription: () ->
+    $("<div></div>")
+
+  # pragma mark - View hirarchy related
+
+  @property "readonly", "subviews"
+
+  @property "readonly", "superview"
+
+  addSubview: (subview) ->
+    subview.willMoveToSuperview(this)
+    subview.willMoveToWindow(@window)
+    subview.superview = this
+    Array.prototype.push.apply(@_subviews, subview)
+    @renderDelegate.viewDidAddSubview(this, subview)
+    subview.didMoveToSuperview(this)
+    subview.didMoveToWindow(@window)
+    this.didAddSubview(subview)
+    return
+
+  removeFromSuperview: () ->
+    @superview.willRemoveSubview(this)
+    @renderDelegate.viewWillRemoveFromSuperview(this)
+    index = @superview.subviews.indexOf(this)
+    index > -1 && @superview.subviews.splice(index, 1)
+    @superview = null
+    return
+
+  bringSubviewToFront: (view) ->
+
+  sendSubviewToBack: (view) ->
+
+  insertSubviewAtIndex: (view, index) ->
+
+  insertSubviewAboveSubview: (newSubview, subview) ->
+
+  insertSubviewBelowSubview: (newSubview, subview) ->
+
+  exchangeSubviewAtIndexWithSubviewAtIndex:(index1, index2) ->
+
+  isDescendantOfView: (view) ->
+
+  # pragma mark - Hooks
+
+  didAddSubview: (view) ->
+  willRemoveSubview: (view) ->
+  willMoveToSuperview: (view) ->
+  didMoveToSuperview: () ->
+  willMoveToWindow: (window) ->
+  didMoveToWindow: () ->
+
+
+  # pragma mark - Layout related properties and methods
+
+  # Rect in the view coordinate of super view.
+  #
+  @property "frame",
+    set: (newValue) ->
+      @_frame = newValue
+      @renderDelegate.layoutView(this)
+      return
+
+  # Rect in the view coordinate of this view.
+  #
+  @property "bounds",
+    set: (newValue) ->
+      @_bounds = newValue
+      x = @frame.origin.x
+      y = @frame.origin.y
+      @frame = new CB.Rect(x, y, newValue.width, newValue.height)
+      return
+
+  # Center of view to the super view coordinate.
+  #
+  @property "center",
+    set: (newValue) ->
+      @_center = newValue
+      [cX, cY] = [newValue.x, newValue.y]
+      x = cX - @frame.size.width / 2
+      y = cY - @frame.size.height / 2
+      width = @frame.size.width
+      height = @frame.size.height
+      @frame = new CB.Rect(x, y, width, height)
+      return
+    get: () ->
+      x = @frame.origin.x + @frame.size.width / 2
+      y = @frame.origin.y + @frame.size.height / 2
+      new CB.Point(x, y)
+
+
+  @property "alpha" # css related?
+
+  @property "backgroundColor" # css related?
+
+  @property "transform" # Future implementation
+
+  @property "hidden"
+
+  @property "opaque" # Make sence on native platform
+
+  @property "clipsToBounds"
+
+  @property "readonly", "window"
+
+
+
+  layoutSubviews: () -> return
+
+  # Old layout implementation
 
   # @todo Bugs exist.
   # Need to modify.
@@ -32,26 +151,6 @@ class CB.View
     for event in events
       @layer.off event
 
-  layerDescription: () ->
-    $("<div></div>")
-
-  # layout
-  @property "frame"
-  @property "bounds"
-  @property "center"
-  # @property "transform" # Future implementation
-  @property "alpha"
-  @property "backgroundColor"
-
-  layoutSubviews: () ->
-    @layer.css("top", @frame.origin.x)
-    @layer.css("left", @frame.origin.y)
-    @layer.width(@frame.size.width)
-    @layer.height(@frame.size.height)
-    for subview in @subviews
-      subview.layoutSubviews()
-
-  # Old layout implementation
   __calculateOffset: (offset, functionName, relativeFName) -> # Need more test
     if @useBodyAsLayer
       return '0px'
@@ -90,35 +189,6 @@ class CB.View
   __left: () -> this.__calculateOffset(@left, "__left", "__width")
   __width: () -> this.__calculateLength(@width, "__width")
   __height: () -> this.__calculateLength(@height, "__height")
-
-  layout: () ->
-    unless CB.Window.currentWindow().keyView == this
-      @layer.css("top", this.__top())
-      @layer.css("left", this.__left())
-      @layer.width(this.__width())
-      @layer.height(this.__height())
-    for subview in @subviews
-      subview.layout()
-
-  # subviews
-  addSubview: (views...) ->
-    for view in views
-      view.superview = this # TODO:
-      view.__loadLayer() # Move this line to if block result in test failure. Why?
-      if @show
-        @layer.append(view.layer)
-    Array.prototype.push.apply(@subviews, views);
-    return
-
-  addSubviews: (subviews...) ->
-    this.addSubview(subviews...)
-
-  removeFromSuperview: () ->
-    index = @superview.subviews.indexOf(this)
-    index > -1 && @superview.subviews.splice(index, 1)
-    @superview = null
-    @layer && @layer.remove()
-    return
 
   # user event
   __sendActions: (event) ->

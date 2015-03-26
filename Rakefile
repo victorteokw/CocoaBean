@@ -1,6 +1,9 @@
 # Require CocoaBean::VERSION
 require_relative 'lib/cocoa_bean/version'
 
+# This is duplicated. # Todo: remove this.
+ENV['JASMINE_CONFIG_PATH'] = './test/jasmine.yml'
+
 # The root directory of Cocoa Bean project
 project_root = File.dirname(__FILE__)
 
@@ -95,6 +98,50 @@ task :version, [:ver] do |t, args|
       Xcodeproj::PlistHelper.write(plist_hash, plist_path)
     end
   end
+end
+
+require 'jasmine'
+load 'jasmine/tasks/jasmine.rake'
+
+namespace :test do
+
+  require 'rake/testtask'
+  desc "Test ruby command line interface"
+  Rake::TestTask.new :cli do |t|
+    t.libs.push File.expand_path('../lib', __FILE__)
+    t.libs.push File.expand_path('../test/cli', __FILE__)
+    t.pattern = 'test/cli/**/*_test.rb'
+  end
+
+  namespace :web do
+    rule ".js" => ".js.coffee" do |t|
+      sh "coffee -o #{File.dirname(t.name)} -c #{t.source}"
+      sh "mv #{t.name}.js #{t.name}"
+    end
+
+    web_test_sources = Rake::FileList.new('test/**/*[tT]est.js.coffee')
+    web_test_targets = web_test_sources.map do |s|
+      s.gsub('.coffee', '')
+    end
+
+    desc "Clean generated web tests."
+    task :clean do
+      sh "find test -type f -name '*[tT]est.js' -delete"
+      sh "find test -type d -empty -delete"
+    end
+
+    task :'do' do
+      ENV['JASMINE_CONFIG_PATH'] = './test/jasmine.yml'
+      Rake::Task["jasmine"].invoke
+    end
+
+    desc "Generate test code for web environment."
+    task :generate => web_test_targets
+  end
+
+  desc "Test on web environment"
+  task :web => ['web:generate', 'web:do']
+
 end
 
 # Require bundler's gem tasks

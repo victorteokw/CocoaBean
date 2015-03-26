@@ -1,0 +1,7 @@
+src_files:
+  - 'dist/cocoabean-0.0.1.js'
+spec_files:
+  - '**/*[tT]est.js'
+
+spec_dir:
+  - 'test'

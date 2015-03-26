@@ -25,6 +25,9 @@ iOS app with javaScript."
 
   s.add_development_dependency 'bundler', '~> 1.7'
   s.add_development_dependency 'rake', '~> 10.0'
-
+  s.add_development_dependency 'jasmine', '~> 2.2'
+  s.add_development_dependency 'coffee-script', '~> 2.3'
+  s.add_development_dependency 'uglifier', '~> 2.7'
+  # s.add_development_dependency 'babel-transpiler'
   s.required_ruby_version = '>= 2.0.0'
 end

@@ -47,6 +47,12 @@ class CB.Renderer
     this.setRootViewForWindow(view, window)
     CB.Window.currentWindow().layoutSubviews()
 
+  layoutView: (view) ->
+    view.layer.css("top", view.frame.origin.x)
+    view.layer.css("left", view.frame.origin.y)
+    view.layer.width(view.frame.size.width)
+    view.layer.height(view.frame.size.height)
+
   loadLayerForView: (view) ->
     if !view.layer
       view.layer = view.layerDescription()
@@ -72,4 +78,17 @@ class CB.Renderer
         subview.layer = null
 
   # pragma mark -
-  bringViewToScreen: (view) ->
+#  bringViewToScreen: (view) ->
+  #
+
+  layoutAndRenderSubviewsForView: (view) ->
+
+    view.layoutSubviews()
+    for subview in view.subviews
+      this.layoutSubviewsForView(subview)
+
+
+  viewWillRemoveFromSuperview: (view) ->
+
+
+  viewDidAddSubview: (view) ->
