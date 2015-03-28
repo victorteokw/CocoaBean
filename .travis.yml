@@ -8,6 +8,9 @@ cache:
 
 before_install:
   - gem install bundler
+  - brew install coreutils
+  - npm install -g coffee-script
+  - mkdir dist
 
 install:
   - bundle install
