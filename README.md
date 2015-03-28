@@ -1,6 +1,8 @@
 # CocoaBean
 The framework enables you to develop native iOS app with javaScript.
 
+[![Build status](https://travis-ci.org/cheunghy/CocoaBean.svg?branch=master)](https://travis-ci.org/cheunghy/CocoaBean)
+
 This framework is under development.
 Please come and contribute this framework.
 
