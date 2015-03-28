@@ -1,6 +1,7 @@
 #= require header
 #= require support/accessor
 #= require support/dispatch
+#= require support/log
 #= require view/point
 #= require view/size
 #= require view/rect

@@ -17,7 +17,7 @@ class CB.Window extends CB.View
   #
   @property "rootViewController",
     get: -> @_rootViewController
-    set: (vc) -> @_rootViewController = vc; this.__setRootView(vc.view)
+    set: (vc) -> @_rootViewController = vc; this.__informRenderer(vc)
 
   # Return true if window is long.
   #
@@ -27,17 +27,8 @@ class CB.Window extends CB.View
   #
   isWide: () -> !this.isLong()
 
-  __setRootView: (view) ->
-   @_rootView = view
-   CB.Renderer.sharedRenderer.renderRootViewForWindow(view, this)
-
-  # Deprecated
-  @property "height",
-    get: -> this.frame.size.height
-
-  # Deprecated
-  @property "width",
-    get: -> this.frame.size.width
+  __informRenderer: (viewController) ->
+    CB.Renderer.sharedRenderer.setRootViewController(viewController)
 
   # pragma mark - window as subclass of CB.View
 

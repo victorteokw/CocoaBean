@@ -142,9 +142,15 @@ namespace :test do
       sh "find test -type d -empty -delete"
     end
 
-    task :'do' => ['dist:web'] do
+    task :'do' => ['web:generate', 'dist:web', 'test/dependencies/jquery-2.1.3.js'] do
       ENV['JASMINE_CONFIG_PATH'] = './test/jasmine.yml'
       Rake::Task["jasmine"].invoke
+    end
+
+    desc "Test on web environment through CI"
+    task :'ci' => ['web:generate', 'dist:web', 'test/dependencies/jquery-2.1.3.js'] do
+      ENV['JASMINE_CONFIG_PATH'] = './test/jasmine.yml'
+      Rake::Task["jasmine:ci"].invoke
     end
 
     desc "Generate test code for web environment."
@@ -152,7 +158,7 @@ namespace :test do
   end
 
   desc "Test on web environment"
-  task :web => ['web:generate','test/dependencies/jquery-2.1.3.js' , 'web:do']
+  task :web => ['web:do']
 
 end
 

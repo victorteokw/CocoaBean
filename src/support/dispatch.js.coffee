@@ -9,3 +9,8 @@ CB.DispatchAfter ||= (func, timeInMillisecond) ->
 
 CB.DispatchAsync ||= (func) ->
   setTimeout(func, 0)
+
+CB.__DebugToken = true
+CB.DispatchDebug ||= (func) ->
+  if CB.__DebugToken
+    func()

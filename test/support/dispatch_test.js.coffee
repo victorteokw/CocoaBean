@@ -30,3 +30,15 @@ describe "Dispatch Once", ->
     CB.DispatchOnce onceToken, ->
       a++
     expect(a).toBe(3)
+
+describe "Dispatch Debug", ->
+  it "should perform when debug token is on", ->
+    CB.__DebugToken = true
+    aValue = 20
+    CB.DispatchDebug(-> aValue = 21)
+    expect(aValue).toBe(21)
+  it "shouldn't perform when debug token is off", ->
+    CB.__DebugToken = false
+    aValue = 30
+    CB.DispatchDebug(-> aValue = 88)
+    expect(aValue).toBe(30)

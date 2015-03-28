@@ -1,4 +1,4 @@
-# Base class for all controllers.
+# Base class for all view controllers.
 #
 # @example How to subclass a controller
 #   class MyController extends CB.ViewController
@@ -17,17 +17,19 @@ class CB.ViewController
   #
   constructor: () ->
 
-  @property "view"
+  @property "readonly", "view",
+    get: ->
+      if !@_view
+        @renderDelegate.loadViewForViewController(this)
+      return @_view
 
-  @property "title",
-    get: -> document.title # @todo cache but not directly set
-    set: (newTitle) -> document.title = newTitle
+  @property "title"
 
   isViewLoaded: () ->
     return !!@_view
 
   loadView: () ->
-    @view = new CB.View
+    @_view = new CB.View
     return
 
   viewDidLoad: () ->

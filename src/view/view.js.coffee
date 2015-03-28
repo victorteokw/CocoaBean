@@ -23,7 +23,11 @@ class CB.View
 
   # pragma mark - Layer
 
-  @property "readonly", "layer"
+  @property "readonly", "layer",
+    get: ->
+      if !@_layer
+        @renderDelegate.loadLayerForView(this)
+      return @_layer
 
   layerDescription: () ->
     $("<div></div>")

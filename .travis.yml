@@ -1,0 +1,21 @@
+language: objective-c
+
+rvm:
+  - 2.2.1
+
+cache:
+  - bundler
+
+before_install:
+  - gem install bundler
+
+install:
+  - bundle install
+
+script:
+  - rake test:cli
+  - rake test:web:ci
+
+notifications:
+  recipients:
+    - yeannylam@gmail.com

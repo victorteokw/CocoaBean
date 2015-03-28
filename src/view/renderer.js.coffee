@@ -14,58 +14,67 @@ class CB.Renderer
   constructor: () ->
     # this.setupDOMBody()
 
-  @property "currentRootView"
+  @property "readonly", "currentRootView",
+    get: ->
+      return null if !@currentRootViewController
+      return @currentRootViewController.view
+
+  @property "currentRootViewController"
+
+  # pragma mark - DOM Setup
 
   setupDOMBody: () ->
-    CB.DispatchOnce "CB.Renderer.setupDOMBody", ->
-      body = $("body")
-      body.css("position", "relative")
-      body.css("margin", "0px")
-#      body.width('100%') may not needed
-#      body.height('100%') may not needed
-      $(window).off("resize")
-      $(window).resize ->
-        CB.Window.currentWindow().layoutSubviews()
+    body = $("body")
+    body.css("position", "relative")
+    body.css("margin", "0px")
+    # body.width('100%') may not needed
+    # body.height('100%') may not needed
+    $(window).off("resize")
+    $(window).resize ->
+      CB.Window.currentWindow().layoutSubviews()
 
-  clearBody: () ->
-    CB.DispatchOnce "CB.Renderer.clearBody", ->
-      if $("body").length
-        $("body").empty()
-    if @currentRootView
-      @currentRootView.removeFromSuperview()
-      @currentRootView = null
+  clearDOMBody: () ->
+    if $("body").length
+      $("body").empty()
 
-  setRootViewForWindow: (view, window) ->
-    if view.superview
-      view.removeFromSuperview()
-    CB.Window.currentWindow().addSubview(view)
-    @currentRootView = view
+  # pragma mark - Interacting with view controller
 
-  renderRootViewForWindow: (view, window) ->
-    this.clearBody()
-    this.loadLayerForView(view)
-    this.setRootViewForWindow(view, window)
+  loadViewForViewController: (viewController) ->
+    return if viewController._view
+    viewController.loadView()
+    if !viewController._view
+      throw "You should set a view in your view controller's loadView."
+    viewController.viewDidLoad()
+
+  # pragma mark - Interacting with window
+
+  setRootViewController: (viewController) ->
+    if @currentRootViewController
+      @currentRootViewController.view.removeFromSuperview()
+    CB.DispatchOnce "CB.Renderer.setRootViewController", ->
+      this.setupDOMBody()
+      this.clearDOMBody()
+    @currentRootViewController = viewController
+    CB.Window.currentWindow().addSubview(@currentRootView)
     CB.Window.currentWindow().layoutSubviews()
 
-  layoutView: (view) ->
-    view.layer.css("top", view.frame.origin.x)
-    view.layer.css("left", view.frame.origin.y)
-    view.layer.width(view.frame.size.width)
-    view.layer.height(view.frame.size.height)
+  # pragma mark - Interacting with view
 
   loadLayerForView: (view) ->
-    if !view.layer
-      view._layer = view.layerDescription()
-      view._layer.css("position", "absolute")
-    force = false
-    if force
-      for subview in view.subviews
-        this.loadLayerForView(subview)
+    return if view._layer
+    view._layer = view.layerDescription()
+    view._layer.css("position", "absolute")
 
-  loadLayerHirarchyForView: (view) ->
-    view.layer.appendTo(view.superview.layer)
-    for subview in view.subviews
-      subview.layer.appendTo(view.layer)
+  # layoutView: (view) ->
+  #   view.layer.css("top", view.frame.origin.x)
+  #   view.layer.css("left", view.frame.origin.y)
+  #   view.layer.width(view.frame.size.width)
+  #   view.layer.height(view.frame.size.height)
+
+  # loadLayerHirarchyForView: (view) ->
+  #   view.layer.appendTo(view.superview.layer)
+  #   for subview in view.subviews
+  #     subview.layer.appendTo(view.layer)
 
   updateCSSForView: (view) ->
 
