@@ -7,7 +7,7 @@ module CocoaBean
       DESC
 
       def run
-        puts "information haha nice."
+        puts "About is not implemented yet."
       end
     end
   end

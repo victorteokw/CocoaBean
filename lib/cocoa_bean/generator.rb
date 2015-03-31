@@ -1,28 +1,65 @@
 module CocoaBean
+  autoload :FrameworkGenerator, 'cocoa_bean/generator/framework_generator'
+  autoload :TemplateGenerator, 'cocoa_bean/generator/template_generator'
+  autoload :TargetGenerator, 'cocoa_bean/generator/target_generator'
+
   class Generator
-    def initialize(options)
-      @coffee = options[:coffee]
-      @path = options[:path]
-      @web = options[:web]
-      @cocoa = options[:cocoa]
+
+    class << self
+
+      def abstract?
+        return @abstract
+      end
+
+      def abstract!
+        @abstract = true
+      end
+
+      def directory(directory_name)
+        if directory_name.is_a? Proc
+          directories << directory_name
+        elsif directory_name.is_a? String
+          directories << directory_name
+        end
+      end
+
+      def file(file_name) # file name with directory
+        if file_name.is_a? Proc
+          files << file_name
+        elsif file_name.is_a? String
+          files << file_name
+        end
+      end
+
+      def directories
+        @directories ||= []
+        return @directories
+      end
+
+      def files
+        @files ||= []
+        return @files
+      end
+
+    end
+
+    abstract!
+
+    def initialize(options = {})
     end
 
     def generate
-      # README.md
-      # LICENSE
-      # Beanfile
-      # src/application.js.coffee
-      # src/main.js.coffee
-      # src/model_name/model_name.js.coffee
-      # src/view/view.js.coffee
-      # src/view_controller/view_controller.js.coffee
-      # web/index.html.slim
-      # cocoa/model_name.xcodeproj
-      # cocoa/model_name/AppDelegate.{h,m}
-      # spec/model_name_spec.js
-      # spec/view/view_spec.js.coffee
-      # spec/view_controller/view_spec.js.coffee
+      raise "Abstarct generator cannot generate." if self.class.abstract?
     end
 
+    attr_accessor :base_directory
+
+    def process_file(file_name)
+      raise "Abstract generator cannot process file." if self.class.abstract?
+    end
+
+    def process_directory(directory_name)
+      raise "Abstract generator cannot process directory." if self.class.abstract?
+    end
   end
 end

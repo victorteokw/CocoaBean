@@ -1,7 +1,7 @@
 module CocoaBean
   class Command
     class Preview < Command
-      self.summary = 'Preview Project.'
+      self.summary = 'Preview an cocoa bean application.'
       self.description = <<-DESC
         Preview this Project.\n
         PLATFORM should be one of 'native' and 'web'.
@@ -20,7 +20,7 @@ module CocoaBean
       end
 
       def run
-        puts "preview command #@platform "
+        puts "preview is not implemented yet."
       end
 
     end
