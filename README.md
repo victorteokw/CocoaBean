@@ -9,8 +9,7 @@ You may customize the behavior through 'Beanfile' and '~/.cocoabeanrc'.
 
 If you find any bugs or if you have feature request, welcome to fire an issue [here](https://github.com/cheunghy/CocoaBean/issues).
 
-Thanks for downloading and using CocoaBean.
-
+## Development
 
 This framework is under development.
 
