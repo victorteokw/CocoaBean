@@ -29,5 +29,18 @@ If you find any bugs or if you have feature request, welcome to fire an issue he
 
 Thanks for downloading and using CocoaBean.
 DESC
+
+
+    def beanfile_location(current_dir = nil)
+      current_dir ||= Dir.pwd
+      potential_beanfile = File.expand_path('Beanfile', current_dir)
+      if File.exist?(potential_beanfile)
+        return potential_beanfile
+      else
+        return nil if current_dir == '/'
+        beanfile_location(File.dirname(current_dir))
+      end
+    end
+
   end
 end

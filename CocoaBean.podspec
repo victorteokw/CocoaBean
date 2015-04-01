@@ -2,6 +2,8 @@ lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'cocoa_bean/version'
 
+# This is not valid yet.
+
 Pod::Spec.new do |s|
   s.name = 'CocoaBean'
   s.version = CocoaBean::VERSION

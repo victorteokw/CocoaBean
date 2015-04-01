@@ -1,7 +1,7 @@
 module CocoaBean
   class Command
     class Preview < Command
-      self.summary = 'Preview an cocoa bean application.'
+      self.summary = 'Preview an cocoa bean application'
       self.description = <<-DESC
         Preview this Project.\n
         PLATFORM should be one of 'native' and 'web'.

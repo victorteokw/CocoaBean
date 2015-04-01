@@ -4,7 +4,7 @@ module CocoaBean
 
       require 'cocoa_bean/generator/template_generator'
 
-      self.summary = 'Generate a cocoa bean project.'
+      self.summary = 'Generate a cocoa bean project'
       self.description = <<-DESC
 Generate a cocoa bean project.
       DESC
