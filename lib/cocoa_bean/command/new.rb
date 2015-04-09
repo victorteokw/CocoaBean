@@ -46,6 +46,9 @@ Generate a cocoa bean project.
         absolute_app_path = File.expand_path(@app_path, Dir.pwd)
         generate_main_project(absolute_app_path)
         if true
+          generate_web_project(absolute_app_path)
+        end
+        if true
           generate_cocoa_project(absolute_app_path)
           generate_ios_target(absolute_app_path)
           generate_osx_target(absolute_app_path)
@@ -60,7 +63,12 @@ Generate a cocoa bean project.
         generator.generate
       end
 
-
+      def generate_web_project(app_path)
+        generator = CocoaBean::TemplateGenerator.new
+        generator.template = "web"
+        generator.destination = app_path
+        generator.generate
+      end
 
       def generate_cocoa_project(app_path)
         require 'xcodeproj'

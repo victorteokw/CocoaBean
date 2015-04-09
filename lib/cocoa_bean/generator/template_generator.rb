@@ -62,16 +62,17 @@ module CocoaBean
       rel = relative_path(source_path)
       if remove_erb
         if File.extname(rel) == ".erb"
-          rel = File.basename(rel, File.extname(rel))
+          rel = rel.sub(/\.erb$/, '')
         end
       end
       File.expand_path(rel, destination)
     end
 
     def process_file(from, to)
+      puts "Process_file #{to}"
       require 'erb'
       raise FileExistError if File.exist?(to)
-      renderer = ERB.new(from)
+      renderer = ERB.new(File.read(from))
       File.write(to, renderer.result)
     rescue FileExistError => e
       puts "[!] File #{to} exists! Cannot generate new application."
@@ -79,6 +80,7 @@ module CocoaBean
     end
 
     def copy_file(from, to)
+      puts "Copy_file #{to}"
       raise FileExistError if File.exist?(to)
       require 'fileutils'
       FileUtils::cp(from, to)
@@ -88,6 +90,7 @@ module CocoaBean
     end
 
     def create_directory(dir_path)
+      puts "Create_dir #{dir_path}"
       raise DirectoryExistError if Dir.exist?(dir_path)
       require 'fileutils'
       FileUtils::mkdir_p(dir_path)
