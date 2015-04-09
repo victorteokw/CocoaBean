@@ -1,7 +1,7 @@
 # Full-fleaged application
-CB.Run(delegate: new LOVE.ApplicationDelegate())
+CB.Run(delegate: new <%= @module_name %>.ApplicationDelegate())
 
 # Simple application
 # CB.run ->
-#   controller = new LOVE.SampleViewController()
+#   controller = new <%= @module_name %>.SampleViewController()
 #   CB.Window.currentWindow().rootViewController = controller

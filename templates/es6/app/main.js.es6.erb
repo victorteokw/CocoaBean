@@ -1,8 +1,8 @@
 // Full-fleaged application
-CB.Run({delegate: new LOVE.ApplicationDelegate()});
+CB.Run({delegate: new <%= @module_name %>.ApplicationDelegate()});
 
 // Simple application
 // CB.Run(function(){
-// 	 var controller = new LOVE.SampleViewController();
-// 	 CB.Window.currentWindow().rootViewController = controller;
+//   var controller = new <%= @module_name %>.SampleViewController();
+//   CB.Window.currentWindow().rootViewController = controller;
 // });

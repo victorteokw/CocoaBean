@@ -71,11 +71,16 @@ Generate a cocoa bean project.
       end
 
       def generate_cocoa_project(app_path)
+        file_generator = CocoaBean::TemplateGenerator.new
+        file_generator.template = "cocoa"
+        file_generator.destination = app_path
+        file_generator.generate
         require 'xcodeproj'
         cocoa_dir = File.expand_path('cocoa', app_path)
-        Dir.mkdir(cocoa_dir)
+        Dir.mkdir(cocoa_dir) unless Dir.exist?(cocoa_dir)
         proj = ::Xcodeproj::Project.new(File.expand_path(File.basename(app_path) + '.xcodeproj', cocoa_dir))
         proj.save
+
       end
 
       def generate_ios_target(app_path)

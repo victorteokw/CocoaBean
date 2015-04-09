@@ -1,0 +1,47 @@
+//
+//  AppDelegate.m
+//  <%= @app_name %>
+//
+//  Created by <%= @author_name %> on <%= @created_at %>.
+//  Copyright (c) <%= @created_year %> <%= @author_name %>. All rights reserved.
+//
+
+#import "AppDelegate.h"
+
+#if TARGET_OS_IPHONE
+
+@interface AppDelegate ()
+
+@end
+
+@implementation AppDelegate
+
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+
+    return YES;
+}
+
+@end
+
+#else
+
+@interface AppDelegate ()
+
+@property (weak) IBOutlet NSWindow *window;
+
+@end
+
+@implementation AppDelegate
+
+- (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
+
+}
+
+- (void)applicationWillTerminate:(NSNotification *)aNotification {
+
+}
+
+@end
+
+#endif

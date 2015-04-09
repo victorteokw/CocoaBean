@@ -8,8 +8,9 @@ Pod::Spec.new do |s|
   s.name = 'CocoaBean'
   s.version = CocoaBean::VERSION
   s.license = "MIT"
-  s.summary = "The framework enables you to develop native \
-iOS app with javaScript."
+
+  s.summary = "Write a single code base in javaScript, and deploy everywhere."
+
   s.authors = {
     'Zhang Kai Yu' => 'yeannylam@gmail.com'
   }

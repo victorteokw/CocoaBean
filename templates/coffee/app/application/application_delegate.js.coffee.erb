@@ -1,6 +1,6 @@
-class LOVE.ApplicationDelegate extends CB.ApplicationDelegate
+class <%= @module_name %>.ApplicationDelegate extends CB.ApplicationDelegate
   applicationDidFinishLaunchingWithOptions: (options) ->
     CB.Log('App launch fine!')
-    controller = new LOVE.SampleViewController()
+    controller = new <%= @module_name %>.SampleViewController()
     CB.Window.currentWindow().rootViewController = controller
     return

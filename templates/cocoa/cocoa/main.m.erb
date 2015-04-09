@@ -1,0 +1,30 @@
+//
+//  main.m
+//  <%= @app_name %>
+//
+//  Created by <%= @author_name %> on <%= @created_at %>.
+//  Copyright (c) <%= @created_year %> <%= @author_name %>. All rights reserved.
+//
+
+#if TARGET_OS_IPHONE
+#import <UIKit/UIKit.h>
+#else
+#import <AppKit/AppKit.h>
+#endif
+#import <JavaScriptCore/JavaScriptCore.h>
+
+#if TARGET_OS_IPONE
+
+int main(int argc, char * argv[]) {
+    @autoreleasepool {
+        return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));
+    }
+}
+
+#else
+
+int main(int argc, const char * argv[]) {
+    return NSApplicationMain(argc, argv);
+}
+
+#endif

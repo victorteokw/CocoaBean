@@ -1,0 +1,34 @@
+//
+//  AppDelegate.h
+//  <%= @app_name %>
+//
+//  Created by <%= @author_name %> on <%= @created_at %>.
+//  Copyright (c) <%= @created_year %> <%= @author_name %>. All rights reserved.
+//
+
+#if TARGET_OS_IPHONE
+#import <UIKit/UIKit.h>
+#else
+#import <AppKit/AppKit.h>
+#endif
+#import <JavaScriptCore/JavaScriptCore.h>
+
+#import <CocoaBean/CocoaBean.h>
+
+#if TARGET_OS_IPHONE
+
+@interface AppDelegate : UIResponder <UIApplicationDelegate>
+
+@property (strong, nonatomic) UIWindow *window;
+
+
+@end
+
+#else
+
+@interface AppDelegate : NSObject <NSApplicationDelegate>
+
+
+@end
+
+#endif

@@ -1,7 +1,7 @@
-class LOVE.ApplicationDelegate extends CB.ApplicationDelegate {
-	applicationDidFinishLaunchingWithOptions: function(options) {
-		CB.Log('App launch fine!');
-		var controller = new LOVE.SampleViewController();
-		CB.Window.currentWindow().rootViewController = controller;
-	}
+class <%= @module_name %>.ApplicationDelegate extends CB.ApplicationDelegate {
+  applicationDidFinishLaunchingWithOptions: function(options) {
+    CB.Log('App launch fine!');
+    var controller = new <%= @module_name %>.SampleViewController();
+    CB.Window.currentWindow().rootViewController = controller;
+  }
 }

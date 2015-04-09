@@ -26,6 +26,14 @@ module CocoaBean
       return @@template_paths
     end
 
+    def generate_instance_variable_for_erb
+      @author_name = ENV['USER']
+      @created_at = Time.now.strftime("%d/%m/%Y %H:%M")
+      @created_year = Time.now.strftime("%Y")
+      @module_name = File.basename(destination).upcase
+      @app_name = File.basename(destination)
+    end
+
     def ignore_list
       [".", "..", ".DS_Store"]
     end
@@ -39,6 +47,7 @@ module CocoaBean
 
     def generate
       super
+      generate_instance_variable_for_erb
       files = Dir.glob(File.expand_path('**/*', source_location))
       files.reject! {|f| ignore_list.include?(File.basename(f)) }
       files.each do |f|
@@ -73,7 +82,7 @@ module CocoaBean
       require 'erb'
       raise FileExistError if File.exist?(to)
       renderer = ERB.new(File.read(from))
-      File.write(to, renderer.result)
+      File.write(to, renderer.result(binding))
     rescue FileExistError => e
       puts "[!] File #{to} exists! Cannot generate new application."
       exit 1
