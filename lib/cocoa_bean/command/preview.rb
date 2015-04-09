@@ -26,6 +26,7 @@ module CocoaBean
         preview_web
       end
 
+      # Duplicate code
       def generate_application_js
         require 'sprockets'
         environment = Sprockets::Environment.new
