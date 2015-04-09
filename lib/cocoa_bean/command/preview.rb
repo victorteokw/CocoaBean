@@ -14,7 +14,10 @@ module CocoaBean
         @platform = argv.shift_argument
       end
 
+      beanfile_required!
+
       def validate!
+        super
         help! 'Provide a platform is required.' unless @platform
         help! 'Platform should be either web or native.' unless ['web', 'native'].include? @platform
       end

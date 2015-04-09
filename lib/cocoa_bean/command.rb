@@ -2,6 +2,18 @@ require 'claide'
 
 module CocoaBean
   class Command < CLAide::Command
+
+    class << self
+      def beanfile_required!
+        @beanfile_required = true
+      end
+
+      def beanfile_required?
+        @beanfile_required
+      end
+
+    end
+
     require 'cocoa_bean/command/new'
     require 'cocoa_bean/command/preview'
     require 'cocoa_bean/command/about'
@@ -29,7 +41,16 @@ If you find any bugs or if you have feature request, welcome to fire an issue he
 
 Thanks for downloading and using CocoaBean.
 DESC
+    def validate!
+      if self.class.beanfile_required?
+      help! 'You should run this command inside a cocoa bean application directory.' unless beanfile_location
+      end
 
+    end
+
+    def beanfile_directory(current_dir = nil)
+      File.dirname(beanfile_location(current_dir))
+    end
 
     def beanfile_location(current_dir = nil)
       current_dir ||= Dir.pwd

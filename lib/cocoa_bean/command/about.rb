@@ -6,9 +6,7 @@ module CocoaBean
         This command read and show information from application's 'Beanfile'.
       DESC
 
-      def validate!
-        help! 'You should run this command inside a cocoa bean application.' unless beanfile_location
-      end
+      beanfile_required!
 
       def run
         load beanfile_location

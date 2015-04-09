@@ -44,14 +44,10 @@ Generate a cocoa bean project.
 
       def run
         absolute_app_path = File.expand_path(@app_path, Dir.pwd)
-        generator = case @lang
-                    when 'coffee'
-                      ::CocoaBean::CoffeeTemplateGenerator.new
-                    when 'es6'
-                      ::CocoaBean::ES6TemplateGenerator.new
-                    end
-        generator.destination_directory, generator.app_name = File.split(absolute_app_path)
-        generator.template_options = {ios: @ios, osx: @osx, web: @web}
+        generator = CocoaBean::TemplateGenerator.new
+        generator.template = @lang
+        generator.destination = absolute_app_path
+        generator.app_name = File.basename(absolute_app_path)
         generator.generate
       end
     end
