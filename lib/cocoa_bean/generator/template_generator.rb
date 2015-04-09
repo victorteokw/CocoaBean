@@ -4,10 +4,8 @@ module CocoaBean
 
     class DirectoryExistError < RuntimeError; end
     class FileExistError < RuntimeError; end
-    class TemplateSourceNotExistError < RuntimeError; end
 
     attr_accessor :destination
-    attr_accessor :app_name # inferred
     attr_accessor :template
 
     def initialize(options = {})

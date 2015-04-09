@@ -44,11 +44,36 @@ Generate a cocoa bean project.
 
       def run
         absolute_app_path = File.expand_path(@app_path, Dir.pwd)
+        generate_main_project(absolute_app_path)
+        if true
+          generate_cocoa_project(absolute_app_path)
+          generate_ios_target(absolute_app_path)
+          generate_osx_target(absolute_app_path)
+        end
+      end
+
+      def generate_main_project(app_path)
         generator = CocoaBean::TemplateGenerator.new
         generator.template = @lang
-        generator.destination = absolute_app_path
-        generator.app_name = File.basename(absolute_app_path)
+        generator.destination = app_path
+#        generator.app_name = File.basename(app_path)
         generator.generate
+      end
+
+
+
+      def generate_cocoa_project(app_path)
+        require 'xcodeproj'
+        cocoa_dir = File.expand_path('cocoa', app_path)
+        Dir.mkdir(cocoa_dir)
+        proj = ::Xcodeproj::Project.new(File.expand_path(File.basename(app_path) + '.xcodeproj', cocoa_dir))
+        proj.save
+      end
+
+      def generate_ios_target(app_path)
+      end
+
+      def generate_osx_target(app_path)
       end
     end
   end
