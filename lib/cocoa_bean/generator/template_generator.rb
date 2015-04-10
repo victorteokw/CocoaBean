@@ -4,8 +4,8 @@ module CocoaBean
 
     class DirectoryExistError < RuntimeError; end
     class FileExistError < RuntimeError; end
+    class TemplateSourceNotExistError < RuntimeError; end
 
-    attr_accessor :destination
     attr_accessor :template
 
     def initialize(options = {})
@@ -17,11 +17,13 @@ module CocoaBean
 
     def template_paths
       if @@template_paths.empty?
-        require 'rubygems'
-        spec = Gem::Specification.find_by_name("cocoabean")
-        gem_root = spec.gem_dir
-        gem_root += "/templates"
-        @@template_paths = [gem_root]
+        tem = File.expand_path('../../../../templates', __FILE__)
+        # require 'rubygems'
+        # spec = Gem::Specification.find_by_name("cocoabean")
+        # gem_root = spec.gem_dir
+        # gem_root += "/templates"
+        # @@template_paths = [gem_root]
+        @@template_paths = [tem]
       end
       return @@template_paths
     end
@@ -40,8 +42,11 @@ module CocoaBean
 
     def source_location
       location = template_paths.find {|p| File.exist?(File.expand_path(template, p)) }
-      location = File.expand_path(template, location)
-      raise TemplateSourceNotExistError unless location
+      if location
+        location = File.expand_path(template, location) if location
+      else
+        raise TemplateSourceNotExistError
+      end
       location
     end
 

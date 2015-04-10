@@ -5,6 +5,8 @@ module CocoaBean
 
   class Generator
 
+    require 'colored'
+
     class AbstractGeneratorCannotGenerateError < RuntimeError; end
 
     class << self
@@ -16,6 +18,8 @@ module CocoaBean
       def abstract!
         @abstract = true
       end
+
+      attr_accessor :abstract
 
     end
 
@@ -29,7 +33,11 @@ module CocoaBean
       raise AbstractGeneratorCannotGenerateError if self.class.abstract?
     end
 
-    attr_accessor :base_directory
+    attr_accessor :destination
 
+    def warning_and_exit(message)
+      puts ('[!] ' + message).red
+      exit 1
+    end
   end
 end

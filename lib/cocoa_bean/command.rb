@@ -11,7 +11,6 @@ module CocoaBean
       def beanfile_required?
         @beanfile_required
       end
-
     end
 
     require 'cocoa_bean/command/new'
@@ -19,6 +18,7 @@ module CocoaBean
     require 'cocoa_bean/command/about'
     require 'cocoa_bean/command/test'
     require 'cocoa_bean/command/open'
+    require 'cocoa_bean/command/dist'
 
     self.abstract_command = true
     self.command = 'cocoabean'

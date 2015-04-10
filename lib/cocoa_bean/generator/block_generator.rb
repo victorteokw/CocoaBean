@@ -1,8 +1,6 @@
 module CocoaBean
   class BlockGenerator < Generator
 
-    attr_accessor :destination
-
     def initialize options = nil, &block
       @options = options
       @block = block
