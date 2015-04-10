@@ -17,13 +17,11 @@ This commmand open the editor specified by 'Beanfile'.
           app = CocoaBean::Application.only_app
           editor = app.editor || ENV['VISUAL'] || ENV['EDITOR']
           if editor.nil? || editor == ''
-            puts "You haven't set your favorite editor."
-            exit 1
+            warning_and_exit("You haven't set your favorite editor.")
           end
           system "#{editor} #{Dir.pwd}"
         rescue CocoaBean::Application::ApplicationCountError => e
-          puts "You should only declare one cocoa bean application in the Beanfile."
-          exit 1
+          warning_and_exit("You should only declare one cocoa bean application in the Beanfile.")
         end
       end
 

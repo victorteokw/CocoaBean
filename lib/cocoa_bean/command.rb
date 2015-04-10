@@ -1,5 +1,5 @@
 require 'claide'
-
+require 'colored'
 module CocoaBean
   class Command < CLAide::Command
 
@@ -45,7 +45,11 @@ DESC
       if self.class.beanfile_required?
       help! 'You should run this command inside a cocoa bean application directory.' unless beanfile_location
       end
+    end
 
+    def warning_and_exit(message)
+      puts ('[!] ' + message).red
+      exit 1
     end
 
     def beanfile_directory(current_dir = nil)

@@ -84,8 +84,7 @@ module CocoaBean
       renderer = ERB.new(File.read(from))
       File.write(to, renderer.result(binding))
     rescue FileExistError => e
-      puts "[!] File #{to} exists! Cannot generate new application."
-      exit 1
+      warning_and_exit("File #{to} exists! Cannot generate new application.")
     end
 
     def copy_file(from, to)
@@ -94,8 +93,7 @@ module CocoaBean
       require 'fileutils'
       FileUtils::cp(from, to)
     rescue FileExistError => e
-      puts "[!] File #{to} exists! Cannot generate new application."
-      exit 1
+      warning_and_exit("File #{to} exists! Cannot generate new application.")
     end
 
     def create_directory(dir_path)
@@ -104,8 +102,7 @@ module CocoaBean
       require 'fileutils'
       FileUtils::mkdir_p(dir_path)
     rescue DirectoryExistError => e
-      puts "[!] Directory #{dir_path} exists! Cannot generate new application."
-      exit 1
+      warning_and_exit("Directory #{dir_path} exists! Cannot generate new application.")
     end
   end
 end

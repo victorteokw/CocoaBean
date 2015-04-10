@@ -13,8 +13,7 @@ module CocoaBean
         begin
           puts CocoaBean::Application.only_app
         rescue CocoaBean::Application::ApplicationCountError => e
-          puts "You should only declare one cocoa bean application."
-          exit 1
+          warning_and_exit("You should only declare one cocoa bean application.")
         end
       end
     end
