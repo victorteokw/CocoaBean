@@ -6,6 +6,9 @@ module CocoaBean
     class FileExistError < RuntimeError; end
     class TemplateSourceNotExistError < RuntimeError; end
 
+    require 'pathname'
+    require 'fileutils'
+
     attr_accessor :template
 
     def initialize(options = {})
@@ -68,7 +71,6 @@ module CocoaBean
 
     def relative_path(full_path, prefix = nil)
       prefix ||= source_location
-      require 'pathname'
       Pathname.new(full_path).relative_path_from(Pathname.new(prefix)).to_s
     end
 
@@ -83,31 +85,35 @@ module CocoaBean
     end
 
     def process_file(from, to)
-      puts "Process_file #{to}"
       require 'erb'
       raise FileExistError if File.exist?(to)
       renderer = ERB.new(File.read(from))
       File.write(to, renderer.result(binding))
+      output_create_file(to)
     rescue FileExistError => e
       warning_and_exit("File #{to} exists! Cannot generate new application.")
     end
 
     def copy_file(from, to)
-      puts "Copy_file #{to}"
       raise FileExistError if File.exist?(to)
-      require 'fileutils'
       FileUtils::cp(from, to)
+      output_create_file(to)
     rescue FileExistError => e
       warning_and_exit("File #{to} exists! Cannot generate new application.")
     end
 
     def create_directory(dir_path)
-      puts "Create_dir #{dir_path}"
       raise DirectoryExistError if Dir.exist?(dir_path)
-      require 'fileutils'
       FileUtils::mkdir_p(dir_path)
+      output_create_file(dir_path)
     rescue DirectoryExistError => e
       warning_and_exit("Directory #{dir_path} exists! Cannot generate new application.")
+    end
+
+    def output_create_file(file_or_dir)
+      rel = Pathname.new(file_or_dir).relative_path_from(Pathname.new(File.dirname(destination))).to_s
+      color = "created".green.bold
+      puts "    #{color} #{rel}"
     end
   end
 end
