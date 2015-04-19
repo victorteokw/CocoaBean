@@ -28,11 +28,12 @@ class CB.Window extends CB.View
   isWide: () -> !this.isLong()
 
   __informRenderer: (viewController) ->
-    CB.Renderer.sharedRenderer.setRootViewController(viewController)
+    CB.Renderer.sharedRenderer().setRootViewController(viewController)
 
   # pragma mark - window as subclass of CB.View
 
-  @property "readonly", "frame",
+  @property "frame",
+    set: (newValue) -> return
     get: ->
       new CB.Rect(0, 0, $(window.height()), $(window.width()))
 

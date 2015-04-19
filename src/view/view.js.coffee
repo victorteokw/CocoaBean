@@ -15,7 +15,7 @@ class CB.View
     @unsyncedStyles = {}
     @eventDelegate = null
     @__events = []
-
+    @_subviews = []
   # pragma mark - Render
 
   @property "readonly", "renderDelegate",
@@ -41,7 +41,7 @@ class CB.View
   addSubview: (subview) ->
     subview.willMoveToSuperview(this)
     subview.willMoveToWindow(@window)
-    subview.superview = this
+    subview._superview = this
     Array.prototype.push.apply(@_subviews, subview)
     @renderDelegate.viewDidAddSubview(this, subview)
     subview.didMoveToSuperview(this)
@@ -88,7 +88,6 @@ class CB.View
   @property "frame",
     set: (newValue) ->
       @_frame = newValue
-      @renderDelegate.layoutView(this)
       return
 
   # Rect in the view coordinate of this view.

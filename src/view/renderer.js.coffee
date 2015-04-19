@@ -51,11 +51,12 @@ class CB.Renderer
   setRootViewController: (viewController) ->
     if @currentRootViewController
       @currentRootViewController.view.removeFromSuperview()
-    CB.DispatchOnce "CB.Renderer.setRootViewController", ->
+    CB.DispatchOnce "CB.Renderer.setRootViewController", =>
       this.setupDOMBody()
       this.clearDOMBody()
     @currentRootViewController = viewController
     CB.Window.currentWindow().addSubview(@currentRootView)
+    CB.Window.currentWindow()._rootView = @currentRootView
     CB.Window.currentWindow().layoutSubviews()
 
   # pragma mark - Interacting with view

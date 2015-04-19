@@ -17,6 +17,9 @@ class CB.ViewController
   #
   constructor: () ->
 
+  @property "readonly", "renderDelegate",
+    get: () -> CB.Renderer.sharedRenderer()
+
   @property "readonly", "view",
     get: ->
       if !@_view
