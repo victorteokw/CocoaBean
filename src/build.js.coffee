@@ -11,5 +11,6 @@
 #= require view/scroll_view
 #= require view/window
 #= require view/renderer
+#= require view_controller/pather
 #= require view_controller/view_controller
 #= require application/application
