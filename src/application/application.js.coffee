@@ -55,10 +55,12 @@ class CB.ApplicationDelegate
 
 # CB.Run(application: object, delegate: object, arguments: [])
 CB.Run = (options) ->
+  options_argument =
+    path: CB.Pather.sharedPather().currentPath()
   if typeof options == 'function'
     $(document).ready ->
       CB.Application.sharedApplication.delegate = new CB.ApplicationDelegate
-      options()
+      options(options_argument)
       CB.DebugLog("Finished launching from an function!")
   else if typeof options == 'object'
     options.application ||= new CB.Application()
@@ -66,7 +68,7 @@ CB.Run = (options) ->
     app = CB.Application.sharedApplication()
     app._delegate = options.delegate
     $(document).ready ->
-      app.delegate.applicationWillFinishLaunchingWithOptions()
+      app.delegate.applicationWillFinishLaunchingWithOptions(options_argument)
       app.finishLaunchingWithInfo()
-      app.delegate.applicationDidFinishLaunchingWithOptions()
+      app.delegate.applicationDidFinishLaunchingWithOptions(options_argument)
       CB.DebugLog("Finished launching from an object!")
