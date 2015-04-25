@@ -12,6 +12,8 @@
 #= require view/view
 #= require view/scroll_view
 #= require view/image_view
+#= require view/label_view
+#= require view/text_view
 #= require view/window
 #= require view/renderer
 #= require view_controller/pather

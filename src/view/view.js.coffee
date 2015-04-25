@@ -17,6 +17,7 @@ class CB.View
     @eventDelegate = null
     @__events = []
     @_subviews = []
+    @_clipsToBounds = true
   # pragma mark - Render
 
   @property "readonly", "renderDelegate",
@@ -120,21 +121,47 @@ class CB.View
       new CB.Point(x, y)
 
 
-  @property "alpha" # css related?
+  @property "alpha",
+    set: (newAlpha) ->
+      @_alpha = newAlpha
+      @css("opacity", newAlpha)
 
-  @property "backgroundColor" # css related?
+  @property "backgroundColor",
+    set: (newColor) ->
+      @_backgroundColor = newColor
+      if color instanceof CB.Color
+        color = color.toString()
+      @css("background-color", color)
 
   @property "transform" # Future implementation
 
-  @property "hidden"
+  @property "hidden",
+    set: (newValue) ->
+      if newValue == true
+        @css("visibility", "hidden")
+      else if newValue == false
+        @css("visibility", "visible")
+      @_hidden = newValue
 
   @property "opaque" # Make sence on native platform
 
-  @property "clipsToBounds"
+  @property "clipsToBounds",
+    set: (newValue) ->
+      if newValue == true
+        @css("overflow", "hidden")
+      else if newValue == false
+        @css("overflow", "visible")
+      @_clipsToBounds = newValue
+
+  @property "cornerRadius",
+    set: (newRadius) ->
+      @_cornerRadius = newRadius
+      @css("border-radius", newRadius)
 
   @property "readonly", "window"
 
-
+  css: (args...) ->
+    @layer.css(args...)
 
   layoutSubviews: () -> return
 
@@ -183,17 +210,8 @@ class CB.View
     .forEach (object) =>
       object.target[object.action](this)
 
-  # CSS and style
-  __syncCSS: () ->
-    for k, v in @__css
-      @layer.css(k, v)
-  css: (args...) ->
-    @__css[args[0]] = @__css[args[1]]
-    if @layer
-      @layer.css(args...)
-  cornerRadius: (radius) ->
-    this.css("border-radius", radius)
-  backgroundColor: (color) ->
-    if color instanceof CB.Color
-      color = color.toString()
-    this.css("background-color", color)
+  sizeThatFits: (size) ->
+    @frame.size
+
+  sizeToFit: () ->
+    @frame = this.sizeThatFits(size)
