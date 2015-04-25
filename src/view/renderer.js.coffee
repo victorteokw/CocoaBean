@@ -30,12 +30,25 @@ class CB.Renderer
     # body.width('100%') may not needed
     # body.height('100%') may not needed
     $(window).off("resize")
+    _this = this
     $(window).resize ->
-      CB.Window.currentWindow().layoutSubviews()
+      _this.layoutEntireHirarchyForWindow()
 
   clearDOMBody: () ->
     if $("body").length
       $("body").empty()
+
+  layoutEntireHirarchyForWindow: () ->
+    this.layoutEntireHirarchyForView(CB.Window.currentWindow())
+
+  layoutEntireHirarchyForView: (view) ->
+    if view.viewController
+      view.viewController.viewWillLayoutSubviews()
+    view.layoutSubviews()
+    if view.viewController
+      view.viewController.viewDidLayoutSubviews()
+    for subview in view.subviews
+      this.layoutEntireHirarchyForView(subview)
 
   # pragma mark - Interacting with view controller
 
@@ -44,6 +57,7 @@ class CB.Renderer
     viewController.loadView()
     if !viewController._view
       throw "You should set a view in your view controller's loadView."
+    viewController._view.viewController = viewController
     viewController.viewDidLoad()
 
   # pragma mark - Interacting with window
@@ -57,7 +71,7 @@ class CB.Renderer
     @currentRootViewController = viewController
     CB.Window.currentWindow().addSubview(@currentRootView)
     CB.Window.currentWindow()._rootView = @currentRootView
-    CB.Window.currentWindow().layoutSubviews()
+    this.layoutEntireHirarchyForWindow()
 
   # pragma mark - Interacting with view
 
@@ -65,12 +79,6 @@ class CB.Renderer
     return if view._layer
     view._layer = view.layerDescription()
     view._layer.css("position", "absolute")
-
-  # layoutView: (view) ->
-  #   view.layer.css("top", view.frame.origin.x)
-  #   view.layer.css("left", view.frame.origin.y)
-  #   view.layer.width(view.frame.size.width)
-  #   view.layer.height(view.frame.size.height)
 
   # loadLayerHirarchyForView: (view) ->
   #   view.layer.appendTo(view.superview.layer)
@@ -84,6 +92,7 @@ class CB.Renderer
   unloadLayerForView: (view) ->
     view.layer.empty()
     view.layer = null
+    force = null
     if force
       for subview in view.subviews
         subview.layer = null
@@ -102,4 +111,12 @@ class CB.Renderer
   viewWillRemoveFromSuperview: (view) ->
 
 
-  viewDidAddSubview: (view) ->
+  viewDidAddSubview: (superview, subview) ->
+    superview.layer.append(subview.layer)
+
+
+  applyFrameForView: (view) ->
+    view.layer.css("left", view.frame.origin.x)
+    view.layer.css("top", view.frame.origin.y)
+    view.layer.width(view.frame.size.width)
+    view.layer.height(view.frame.size.height)

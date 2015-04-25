@@ -11,7 +11,8 @@ class CB.View
   # @param [CB.Rect] a frame.
   # @return [CB.View] newly created CB.View
   #
-  constructor: (@frame) ->
+  constructor: (frame) ->
+    @frame = frame || new CB.Rect(0, 0, 0, 0)
     @unsyncedStyles = {}
     @eventDelegate = null
     @__events = []
@@ -42,7 +43,7 @@ class CB.View
     subview.willMoveToSuperview(this)
     subview.willMoveToWindow(@window)
     subview._superview = this
-    Array.prototype.push.apply(@_subviews, subview)
+    Array.prototype.push.apply(@_subviews, [subview])
     @renderDelegate.viewDidAddSubview(this, subview)
     subview.didMoveToSuperview(this)
     subview.didMoveToWindow(@window)
@@ -88,6 +89,7 @@ class CB.View
   @property "frame",
     set: (newValue) ->
       @_frame = newValue
+      @renderDelegate.applyFrameForView(this)
       return
 
   # Rect in the view coordinate of this view.
@@ -153,45 +155,6 @@ class CB.View
       "touchstart"]
     for event in events
       @layer.off event
-
-  __calculateOffset: (offset, functionName, relativeFName) -> # Need more test
-    if @useBodyAsLayer
-      return '0px'
-    switch typeof offset
-      when 'number'
-        return offset
-        return CB.Metrics.add @superview[functionName](), offset
-      when 'string'
-        if offset.match(/px$/)
-          return offset
-          return CB.Metrics.add @superview[functionName](), offset
-        else if offset.match(/%$/)
-          return CB.Metrics.multiply @superview[relativeFName](), offset
-        else
-          return '0px'
-      when 'function'
-        return offset()
-
-  __calculateLength: (length, functionName) ->
-    if @useBodyAsLayer
-      return '100%'
-    switch typeof length
-      when 'number'
-        return length + 'px'
-      when 'string'
-        if length.match(/px$/)
-          return length
-        else if length.match(/%$/)
-          return CB.Metrics.multiply @superview[functionName](), length
-        else
-          return '0px'
-      when 'function'
-        return length()
-
-  __top: () -> this.__calculateOffset(@top, "__top", "__height")
-  __left: () -> this.__calculateOffset(@left, "__left", "__width")
-  __width: () -> this.__calculateLength(@width, "__width")
-  __height: () -> this.__calculateLength(@height, "__height")
 
   # user event
   __sendActions: (event) ->
