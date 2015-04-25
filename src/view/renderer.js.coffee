@@ -71,6 +71,7 @@ class CB.Renderer
     @currentRootViewController = viewController
     CB.Window.currentWindow().addSubview(@currentRootView)
     CB.Window.currentWindow()._rootView = @currentRootView
+    CB.Window.currentWindow()._rootView._window = CB.Window.currentWindow()
     this.layoutEntireHirarchyForWindow()
 
   # pragma mark - Interacting with view
@@ -114,9 +115,12 @@ class CB.Renderer
   viewDidAddSubview: (superview, subview) ->
     superview.layer.append(subview.layer)
 
-
   applyFrameForView: (view) ->
     view.layer.css("left", view.frame.origin.x)
     view.layer.css("top", view.frame.origin.y)
     view.layer.width(view.frame.size.width)
     view.layer.height(view.frame.size.height)
+
+  viewNeedsLayout: (view) ->
+    if view.window
+      this.layoutEntireHirarchyForWindow()

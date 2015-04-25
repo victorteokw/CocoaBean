@@ -158,17 +158,19 @@ class CB.View
       @_cornerRadius = newRadius
       @css("border-radius", newRadius)
 
-  @property "readonly", "window"
+  @property "readonly", "window",
+    get: () ->
+      return null if !@superview
+      return @_window if @_window
+      @superview.window
 
   css: (args...) ->
     @layer.css(args...)
 
   layoutSubviews: () -> return
 
-  # Old layout implementation
+  # Old gesture implementation, need to delete
 
-  # @todo Bugs exist.
-  # Need to modify.
   __loadGestures: () ->
     @layer.on "click", =>
       this.__sendActions("click")
@@ -215,3 +217,6 @@ class CB.View
 
   sizeToFit: () ->
     @frame = this.sizeThatFits(size)
+
+  setNeedsLayout: () ->
+    @renderDelegate.viewNeedsLayout(this)
