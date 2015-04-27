@@ -51,39 +51,55 @@ class CB.Control extends CB.View
   allTargets: () ->
   allControlEvents: () ->
 
+  setTouchOrPointInsideForEvent: (event) ->
+    point = event.locationInView(this)
+    @touchOrPointInside = this.pointInsideWithEvent(point, event)
 
+  # TODO: Touch event not available yet
   touchesBeganWithEvent: (event) ->
     @tracking = true
+    this.setTouchOrPointInsideForEvent(event)
     this.beginTrackingWithEvent(event)
 
   touchesMovedWithEvent: (event) ->
     if @tracking
+      this.setTouchOrPointInsideForEvent(event)
       this.continueTrackingWithEvent(event)
 
   touchesEndedWithEvent: (event) ->
     if @tracking
       @tracking = false
+      this.setTouchOrPointInsideForEvent(event)
       this.endTrackingWithEvent(event)
+      @touchOrPointInside = false
 
   touchesCanceledWithEvent: (event) ->
     if @tracking
       @tracking = false
+      this.setTouchOrPointInsideForEvent(event)
       this.cancelTrackingWithEvent(event)
+      @touchOrPointInside = false
 
   mouseDownWithEvent: (event) ->
     @tracking = true
+    this.setTouchOrPointInsideForEvent(event)
     this.beginTrackingWithEvent(event)
 
   mouseMovedWithEvent: (event) ->
     if @tracking
+      this.setTouchOrPointInsideForEvent(event)
       this.continueTrackingWithEvent(event)
 
   mouseUpWithEvent: (event) ->
     if @tracking
       @tracking = false
+      this.setTouchOrPointInsideForEvent(event)
       this.endTrackingWithEvent(event)
+      @touchOrPointInside = false
 
   mouseExitedWithEvent: (event) ->
     if @tracking
       @tracking = false
+      this.setTouchOrPointInsideForEvent(event)
       this.cancelTrackingWithEvent(event)
+      @touchOrPointInside = false

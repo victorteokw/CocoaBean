@@ -236,14 +236,69 @@ class CB.View extends CB.Responder
   canBecomeFirstResponder: () ->
     @userInteractionEnabled
 
+  ancestorSharedWithView: (view) ->
+    # Implementation from
+    # http://stackoverflow.com/questions/22666535/shared-ancestor-between-two-views
+    return nil unless view
+    return this if view == this
+    return this if view.superview == this
+    ancestor = this.superview.ancestorSharedWithView(view)
+    return ancestor if ancestor
+    return this.ancestorSharedWithView(view.superview)
+
+  isDescendantOf: (view) ->
+    return true if view == this
+    return false unless this.superview
+    this.superview.isDescendantOf(view)
+
   convertPointToView: (point, view) ->
+    p = point
+    v = this
+    s = this.ancestorSharedWithView(view)
+    return null unless s
+    while v.superview.isDescendantOf(s) and s != v
+      p = new CB.Point(p.x + v.frame.x, p.y + v.frame.y)
+      v = v.superview
+    p2 = new Point(0, 0)
+    while view.superview.isDescendantOf(s) and s != v
+      p2 = new CB.Point(p2.x + view.frame.x, p2.y + view.frame.y)
+      view = view.superview
+    return new CB.Point(p2.x - p.x, p2.y - p.y)
 
   convertPointFromView: (point, view) ->
+    view.convertPointToView(point, this)
 
   convertRectToView: (rect, view) ->
+    s = rect.size
+    p = convertPointToView(rect.origin, view)
+    return new CB.Rect(p.x, p.y, s.width, s.height)
 
   convertRectFromView: (rect, view) ->
+    view.convertRectToView(rect, this)
 
   pointInsideWithEvent: (point, event) ->
+    if 0 <= point.x <= @frame.width and
+       0 <= point.y <= @frame.height
+      return true
+    return false
 
   hitTestWithEvent: (point, event) ->
+    if this.pointInsideWithEvent(point, event)
+      if this.hidden or !this.userInteractionEnabled or this.alpha < 0.01
+        return null
+      thatView = null
+      thatPoint = null
+      for subview in @subviews.reverse()
+        p = this.convertPointToView(subview)
+        if subview.pointInsideWithEvent(p, event)
+          thatView = subview
+          thatPoint = p
+          break
+      if thatView && thatPoint
+        retVal = thatView.hitTestWithEvent(thatPoint, event)
+        if retVal
+          return retVal
+        return thatView
+      else return this
+    else
+      return null
