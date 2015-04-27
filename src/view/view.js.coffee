@@ -6,7 +6,7 @@
 # @example Create a view
 #   view = new CB.View()
 #
-class CB.View
+class CB.View extends CB.Responder
 
   # @param [CB.Rect] a frame.
   # @return [CB.View] newly created CB.View
@@ -18,6 +18,7 @@ class CB.View
     @__events = []
     @_subviews = []
     @_clipsToBounds = true
+    @_userInteractionEnabled = true
   # pragma mark - Render
 
   @property "readonly", "renderDelegate",
@@ -220,3 +221,17 @@ class CB.View
 
   setNeedsLayout: () ->
     @renderDelegate.viewNeedsLayout(this)
+
+  layoutIfNeeded: () ->
+    @renderDelegate.viewNeedsLayout(this)
+
+
+  nextResponder: () ->
+    return @viewController if @viewController
+    return @superview if @superview
+    return null
+
+  @property "userInteractionEnabled"
+
+  canBecomeFirstResponder: () ->
+    @userInteractionEnabled

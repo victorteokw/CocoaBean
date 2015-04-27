@@ -9,7 +9,11 @@
 #= require view/color
 #= require view/metrics
 #= require view/image
+#= require view/touch
+#= require view/event
+#= require view/responder
 #= require view/view
+#= require view/control
 #= require view/scroll_view
 #= require view/image_view
 #= require view/label_view

@@ -2,7 +2,7 @@
 #
 # To reference the application singleton, use CB.Application.sharedApplication
 #
-class CB.Application
+class CB.Application extends CB.Responder
   # Constructor of CB.Application
   # Don't create application instance yourself
   # Use CB.Application.sharedApplication instead
@@ -39,6 +39,8 @@ class CB.Application
     get: ->
       document.title
 
+  nextResponder: () ->
+    null
 
 # The application delegate class.
 #
@@ -46,7 +48,8 @@ class CB.ApplicationDelegate
 
   constructor: () -> return
 
-  # This is currently unused, use applicationDidFinishLaunchingWithOptions instead.
+  # This is currently unused,
+  # use applicationDidFinishLaunchingWithOptions instead.
   applicationWillFinishLaunchingWithOptions: (options) ->
     return
 

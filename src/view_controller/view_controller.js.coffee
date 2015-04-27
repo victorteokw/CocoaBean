@@ -11,7 +11,7 @@
 #     controller = new MyController()
 #     CB.Window.currentWindow().setRootViewController(controller)
 #
-class CB.ViewController
+class CB.ViewController extends CB.Responder
   # Construct a new controller.
   # This method does not take any parameters.
   #
@@ -69,3 +69,7 @@ class CB.ViewController
   willMoveToParentViewController: (parent) ->
 
   didMoveToParentViewController: (parent) ->
+
+  nextResponder: () ->
+    return null unless @_view
+    @view.superview

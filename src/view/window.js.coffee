@@ -42,3 +42,6 @@ class CB.Window extends CB.View
 
   layerDescription: () ->
     $("body")
+
+  nextResponder: () ->
+    CB.Application.sharedApplication()

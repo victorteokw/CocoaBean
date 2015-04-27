@@ -21,22 +21,72 @@ class CB.Renderer
 
   @property "currentRootViewController"
 
-  # pragma mark - DOM Setup
+  # pragma mark - Setup
 
-  setupDOMBody: () ->
+  setup: () ->
+    this.clearDOMBody()
+    this.setupBodyCSS()
+    this.setupResize()
+    this.setupEventDispatcher()
+
+  setupBodyCSS: () ->
     body = $("body")
     body.css("position", "relative")
     body.css("margin", "0px")
-    # body.width('100%') may not needed
-    # body.height('100%') may not needed
+    # body.width('100%') body.height('100%')
+
+  setupResize: () ->
     $(window).off("resize")
     _this = this
     $(window).resize ->
       _this.layoutEntireHirarchyForWindow()
 
+  setupEventDispatcher: () ->
+    $body = $("body")
+    events = ["touchstart", "touchmove", "touchend", "touchcancel",
+      "mousemove", "mousedown", "mouseup"]
+    for event in events
+      block = (event) =>
+        $body.on event, (e) =>
+          this[event](e)
+      block(event)
+
   clearDOMBody: () ->
     if $("body").length
       $("body").empty()
+
+  # pragma mark - event handling
+
+  touchstart: (e) ->
+  touchmove: (e) ->
+  touchend: (e) ->
+  touchcancel: (e) ->
+  mousemove: (e) ->
+
+  mousedown: (e) ->
+    layer = $(e.target)
+    view = layer.data("view")
+    while !view
+      break if layer.is($(document))
+      layer = layer.parent()
+      view = layer.data("view")
+    responder = view
+    while responder && !responder.canBecomeFirstResponder()
+      responder = responder.nextResponder()
+    if responder
+      event = new CB.Event
+      event._timestamp = "ok"
+      event._locationInWindow = new CB.Point(e.clientX, e.clientY)
+      event._type = "mouse"
+      event._view = view
+      event._window = view.window
+      responder.mouseDownWithEvent(event)
+
+  mouseup: (e) ->
+
+
+
+  # pragma mark - layout
 
   layoutEntireHirarchyForWindow: () ->
     this.layoutEntireHirarchyForView(CB.Window.currentWindow())
@@ -66,8 +116,7 @@ class CB.Renderer
     if @currentRootViewController
       @currentRootViewController.view.removeFromSuperview()
     CB.DispatchOnce "CB.Renderer.setRootViewController", =>
-      this.setupDOMBody()
-      this.clearDOMBody()
+      this.setup()
     @currentRootViewController = viewController
     CB.Window.currentWindow().addSubview(@currentRootView)
     CB.Window.currentWindow()._rootView = @currentRootView
@@ -79,7 +128,11 @@ class CB.Renderer
   loadLayerForView: (view) ->
     return if view._layer
     view._layer = view.layerDescription()
+    view._layer.data("view", view)
     view._layer.css("position", "absolute")
+
+  viewForLayer: (layer) ->
+    layer.data("view")
 
   # loadLayerHirarchyForView: (view) ->
   #   view.layer.appendTo(view.superview.layer)
@@ -98,12 +151,7 @@ class CB.Renderer
       for subview in view.subviews
         subview.layer = null
 
-  # pragma mark -
-#  bringViewToScreen: (view) ->
-  #
-
   layoutAndRenderSubviewsForView: (view) ->
-
     view.layoutSubviews()
     for subview in view.subviews
       this.layoutSubviewsForView(subview)

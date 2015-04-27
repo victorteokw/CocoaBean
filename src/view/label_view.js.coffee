@@ -1,5 +1,9 @@
 class CB.LabelView extends CB.View
 
+  constructor: (frame) ->
+    super(frame)
+    @_userInteractionEnabled = false
+
   @property "text",
     set: (newText) ->
       @_text = newText
