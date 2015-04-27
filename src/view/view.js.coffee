@@ -235,3 +235,15 @@ class CB.View extends CB.Responder
 
   canBecomeFirstResponder: () ->
     @userInteractionEnabled
+
+  convertPointToView: (point, view) ->
+
+  convertPointFromView: (point, view) ->
+
+  convertRectToView: (rect, view) ->
+
+  convertRectFromView: (rect, view) ->
+
+  pointInsideWithEvent: (point, event) ->
+
+  hitTestWithEvent: (point, event) ->

@@ -6,3 +6,7 @@ class CB.Event
 
   @property "readonly", "view"
   @property "readonly", "window"
+
+  locationInView: (view) ->
+
+  previousLocationInView: (view) ->
