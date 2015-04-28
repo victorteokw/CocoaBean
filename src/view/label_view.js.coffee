@@ -4,10 +4,24 @@ class CB.LabelView extends CB.View
     super(frame)
     @_userInteractionEnabled = false
 
+  # Implementation from here
+  # https://github.com/cheunghy/jquery.colorfy/blob/master/jquery.colorfy.coffee
+  __htmlfyText: (dataText) ->
+    dataText = dataText.replace(/&/g, '&amp;')    # & -> &amp;
+    dataText = dataText.replace(/</g, '&lt;')     # < -> &lt;
+    dataText = dataText.replace(/>/g, '&gt;')     # > -> &gt;
+    dataText = dataText.replace(/"/g, '&quot;')   # " -> &quot;
+    dataText = dataText.replace(/'/g, '&apos;')   # ' -> &apos;
+    dataText = dataText.replace(/\//g, '&#x2F;')  # / -> &#x2F;
+    dataText = dataText.replace(/\n/g, '<br>')    # \n -> <br>
+    # Coffee cannot compile if use literal '/ /g'
+    dataText = dataText.replace(new RegExp(' ', 'g'), '&nbsp;')   # ' ' -> &nbsp;
+    return dataText
+
   @property "text",
     set: (newText) ->
       @_text = newText
-      @layer.text(newText)
+      @layer.html(this.__htmlfyText(newText))
       this.setNeedsLayout()
 
   @property "font",
@@ -56,10 +70,9 @@ class CB.LabelView extends CB.View
       @_sizeTestingLayer.css("white-space", "nowrap")
     @_sizeTestingLayer.css("font-family", @font)
     @_sizeTestingLayer.css("font-size", @fontSize)
-    @_sizeTestingLayer.text(@text)
+    @_sizeTestingLayer.html(this.__htmlfyText(@text))
     $("body").append(@_sizeTestingLayer)
     h = @_sizeTestingLayer[0].clientHeight + 1
     w = @_sizeTestingLayer[0].clientWidth + 1
     @_sizeTestingLayer.remove()
-    CB.Log("Height " + h + " Width " + w)
     new CB.Size(w, h)

@@ -21,6 +21,8 @@ class CB.Renderer
 
   @property "currentRootViewController"
 
+  @property "lastEventDispatched"
+
   # pragma mark - Setup
 
   setup: () ->
@@ -61,30 +63,82 @@ class CB.Renderer
   touchmove: (e) ->
   touchend: (e) ->
   touchcancel: (e) ->
+
   mousemove: (e) ->
+    view = this.__getEventViewFromEvent(e)
+    responder = view
+    return unless responder
+    while responder && !responder.canBecomeFirstResponder()
+      responder = responder.nextResponder()
+    if responder
+      if responder == CB.Responder.currentFirstResponder
+        event = new CB.Event
+        if @lastEventDispatched
+          event._previousLocationInWindow = @lastEventDispatched.locationInWindow
+        event._timestamp = new Date
+        event._locationInWindow = new CB.Point(e.clientX, e.clientY)
+        event._view = view
+        event._window = view.window
+        event._type = "mouse.move"
+        responder.mouseMovedWithEvent(event)
+      else
+        event = new CB.Event
+        if @lastEventDispatched
+          event._previousLocationInWindow = @lastEventDispatched.locationInWindow
+        event._timestamp = new Date
+        event._locationInWindow = new CB.Point(e.clientX, e.clientY)
+        event._view = view
+        event._window = view.window
+        event._type = "mouse.exit"
+        responder.mouseExitedWithEvent(event)
+        # @lastEventDispatched = null
+        # CB.Responder.currentFirstResponder = null
 
   mousedown: (e) ->
+    view = this.__getEventViewFromEvent(e)
+    responder = view
+    return unless responder
+    while responder && !responder.canBecomeFirstResponder()
+      responder = responder.nextResponder()
+    if responder
+      CB.Responder.currentFirstResponder = responder
+      event = new CB.Event
+      event._timestamp = new Date
+      event._locationInWindow = new CB.Point(e.clientX, e.clientY)
+      event._view = view
+      event._window = view.window
+      event._type = "mouse.down"
+      responder.mouseDownWithEvent(event)
+      @lastEventDispatched = event
+
+  mouseup: (e) ->
+    return unless CB.Responder.currentFirstResponder
+    view = this.__getEventViewFromEvent(e)
+    responder = view
+    while responder && !responder.canBecomeFirstResponder()
+      responder = responder.nextResponder()
+    if responder
+      CB.Responder.currentFirstResponder == responder
+      event = new CB.Event
+      if @lastEventDispatched
+        event._previousLocationInWindow = @lastEventDispatched.locationInWindow
+      event._timestamp = new Date
+      event._locationInWindow = new CB.Point(e.clientX, e.clientY)
+      event._view = view
+      event._window = view.window
+      event._type = "mouse.up"
+      responder.mouseUpWithEvent(event)
+    CB.Responder.currentFirstResponder = null
+    @lastEventDispatched = null
+
+  __getEventViewFromEvent: (e) ->
     layer = $(e.target)
     view = layer.data("view")
     while !view
       break if layer.is($(document))
       layer = layer.parent()
       view = layer.data("view")
-    responder = view
-    while responder && !responder.canBecomeFirstResponder()
-      responder = responder.nextResponder()
-    if responder
-      event = new CB.Event
-      event._timestamp = "ok"
-      event._locationInWindow = new CB.Point(e.clientX, e.clientY)
-      event._type = "mouse"
-      event._view = view
-      event._window = view.window
-      responder.mouseDownWithEvent(event)
-
-  mouseup: (e) ->
-
-
+    return view
 
   # pragma mark - layout
 

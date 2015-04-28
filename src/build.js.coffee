@@ -14,6 +14,7 @@
 #= require view/responder
 #= require view/view
 #= require view/control
+#= require view/text_button
 #= require view/scroll_view
 #= require view/image_view
 #= require view/label_view

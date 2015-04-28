@@ -19,6 +19,11 @@ class CB.View extends CB.Responder
     @_subviews = []
     @_clipsToBounds = true
     @_userInteractionEnabled = true
+    @_alpha = 1
+    @_hidden = false
+    @clipsToBounds = true
+    @_cornerRadius = 0
+
   # pragma mark - Render
 
   @property "readonly", "renderDelegate",
@@ -170,49 +175,6 @@ class CB.View extends CB.Responder
 
   layoutSubviews: () -> return
 
-  # Old gesture implementation, need to delete
-
-  __loadGestures: () ->
-    @layer.on "click", =>
-      this.__sendActions("click")
-    # events = ["click", "mouseenter", "mouseleave", "focus", "blur", \
-    #   "touchstart"]
-    # for event in events
-    #   @layer.on event, =>
-    #     this.__sendActions(event)
-  __unloadGestures: () ->
-    events = ["click", "mouseenter", "mouseleave", "focus", "blur", \
-      "touchstart"]
-    for event in events
-      @layer.off event
-
-  # user event
-  __sendActions: (event) ->
-    if @eventDelegate
-      return @eventDelegate.__sendActions(event)
-    this.sendActionsForUserEvent(event)
-
-  queryTargetActionEvent: (target, action, event) ->
-    @__events.filter (obj) ->
-      (if target then obj.target == target else true) &&
-      (if action then obj.action == action else true) &&
-      (if event then obj.event == event else true)
-
-  # TODO: lint event
-  # target is an object, action is string of method name,
-  # event is "tap" or "click"
-  addTargetForUserEvent: (target, action, event) ->
-    @__events.push(target: target, action: action, event: event)
-
-  removeTargetForUserEvent: (target, action, event) ->
-    @__events = @__events.filter (obj) ->
-      !this.queryTargetActionEvent(target, action, event)
-
-  sendActionsForUserEvent: (event) ->
-    this.queryTargetActionEvent(null, null, event)
-    .forEach (object) =>
-      object.target[object.action](this)
-
   sizeThatFits: (size) ->
     @frame.size
 
@@ -234,7 +196,7 @@ class CB.View extends CB.Responder
   @property "userInteractionEnabled"
 
   canBecomeFirstResponder: () ->
-    @userInteractionEnabled
+    @userInteractionEnabled && @alpha >= 0.01 && !@hidden
 
   ancestorSharedWithView: (view) ->
     # Implementation from
@@ -242,9 +204,11 @@ class CB.View extends CB.Responder
     return nil unless view
     return this if view == this
     return this if view.superview == this
-    ancestor = this.superview.ancestorSharedWithView(view)
-    return ancestor if ancestor
-    return this.ancestorSharedWithView(view.superview)
+    if this.superview
+      ancestor = this.superview.ancestorSharedWithView(view)
+      return ancestor if ancestor
+    else
+      return this.ancestorSharedWithView(view.superview)
 
   isDescendantOf: (view) ->
     return true if view == this
@@ -256,14 +220,14 @@ class CB.View extends CB.Responder
     v = this
     s = this.ancestorSharedWithView(view)
     return null unless s
-    while v.superview.isDescendantOf(s) and s != v
+    while v.superview && v.superview.isDescendantOf(s) and s != v
       p = new CB.Point(p.x + v.frame.x, p.y + v.frame.y)
       v = v.superview
-    p2 = new Point(0, 0)
-    while view.superview.isDescendantOf(s) and s != v
+    p2 = new CB.Point(0, 0)
+    while view.superview && view.superview.isDescendantOf(s) and s != view
       p2 = new CB.Point(p2.x + view.frame.x, p2.y + view.frame.y)
       view = view.superview
-    return new CB.Point(p2.x - p.x, p2.y - p.y)
+    return new CB.Point(p.x - p2.x, p.y - p2.y)
 
   convertPointFromView: (point, view) ->
     view.convertPointToView(point, this)

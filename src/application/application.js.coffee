@@ -74,4 +74,3 @@ CB.Run = (options) ->
       app.delegate.applicationWillFinishLaunchingWithOptions(options_argument)
       app.finishLaunchingWithInfo()
       app.delegate.applicationDidFinishLaunchingWithOptions(options_argument)
-      CB.DebugLog("Finished launching from an object!")
