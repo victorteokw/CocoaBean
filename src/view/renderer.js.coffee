@@ -212,7 +212,7 @@ class CB.Renderer
 
 
   viewWillRemoveFromSuperview: (view) ->
-
+    view.layer.remove()
 
   viewDidAddSubview: (superview, subview) ->
     superview.layer.append(subview.layer)

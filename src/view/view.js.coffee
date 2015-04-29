@@ -13,11 +13,8 @@ class CB.View extends CB.Responder
   #
   constructor: (frame) ->
     @frame = frame || new CB.Rect(0, 0, 0, 0)
-    @unsyncedStyles = {}
-    @eventDelegate = null
-    @__events = []
     @_subviews = []
-    @_clipsToBounds = true
+    @_clipsToBounds = false
     @_userInteractionEnabled = true
     @_alpha = 1
     @_hidden = false
@@ -62,7 +59,7 @@ class CB.View extends CB.Responder
     @renderDelegate.viewWillRemoveFromSuperview(this)
     index = @superview.subviews.indexOf(this)
     index > -1 && @superview.subviews.splice(index, 1)
-    @superview = null
+    @_superview = null
     return
 
   bringSubviewToFront: (view) ->
@@ -137,7 +134,7 @@ class CB.View extends CB.Responder
       @_backgroundColor = newColor
       if color instanceof CB.Color
         color = color.toString()
-      @css("background-color", color)
+      @css("background-color", newColor)
 
   @property "transform" # Future implementation
 

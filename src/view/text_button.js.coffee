@@ -18,4 +18,5 @@ class CB.TextButton extends CB.Control
     return @labelView.sizeThatFits(size)
 
   layoutSubviews: () ->
-    @_labelView.frame = new CB.Rect(0, 0, @labelView.sizeThatFits().width, @labelView.sizeThatFits().height)
+    intrinsicHeight = @labelView.sizeThatFits().height
+    @_labelView.frame = new CB.Rect(0, (@frame.height - intrinsicHeight) / 2, @frame.width, intrinsicHeight)

@@ -21,7 +21,10 @@ class CB.LabelView extends CB.View
   @property "text",
     set: (newText) ->
       @_text = newText
-      @layer.html(this.__htmlfyText(newText))
+      if newText
+        @layer.html(this.__htmlfyText(newText))
+      else
+        @layer.html(this.__htmlfyText(""))
       this.setNeedsLayout()
 
   @property "font",
@@ -70,7 +73,8 @@ class CB.LabelView extends CB.View
       @_sizeTestingLayer.css("white-space", "nowrap")
     @_sizeTestingLayer.css("font-family", @font)
     @_sizeTestingLayer.css("font-size", @fontSize)
-    @_sizeTestingLayer.html(this.__htmlfyText(@text))
+    if @text
+      @_sizeTestingLayer.html(this.__htmlfyText(@text))
     $("body").append(@_sizeTestingLayer)
     h = @_sizeTestingLayer[0].clientHeight + 1
     w = @_sizeTestingLayer[0].clientWidth + 1
