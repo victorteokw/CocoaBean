@@ -222,6 +222,7 @@ class CB.Renderer
     view.layer.css("top", view.frame.origin.y)
     view.layer.width(view.frame.size.width)
     view.layer.height(view.frame.size.height)
+    view.layoutSubviews()
 
   viewNeedsLayout: (view) ->
     if view.window
