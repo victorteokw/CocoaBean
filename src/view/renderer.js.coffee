@@ -210,7 +210,6 @@ class CB.Renderer
     for subview in view.subviews
       this.layoutSubviewsForView(subview)
 
-
   viewWillRemoveFromSuperview: (view) ->
     view.layer.remove()
 
@@ -222,7 +221,8 @@ class CB.Renderer
     view.layer.css("top", view.frame.origin.y)
     view.layer.width(view.frame.size.width)
     view.layer.height(view.frame.size.height)
-    view.layoutSubviews()
+    if view._subviews && view._subviews.length > 0
+      view.layoutSubviews()
 
   viewNeedsLayout: (view) ->
     if view.window

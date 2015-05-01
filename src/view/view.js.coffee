@@ -32,6 +32,11 @@ class CB.View extends CB.Responder
     get: ->
       if !@_layer
         @renderDelegate.loadLayerForView(this)
+        @_layer.css("-webkit-touch-callout", "none")
+        @_layer.css("-webkit-user-select", "none")
+        @_layer.css("-moz-user-select", "-moz-none")
+        @_layer.css("-ms-user-select", "none")
+        @_layer.css("user-select", "none")
       return @_layer
 
   layerDescription: () ->
