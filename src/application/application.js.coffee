@@ -7,7 +7,9 @@ class CB.Application extends CB.Responder
   # Don't create application instance yourself
   # Use CB.Application.sharedApplication instead
   #
-  constructor: () -> return
+  constructor: () ->
+    super()
+    return
 
   # The singleton instance that represents this current running application.
   #
@@ -20,14 +22,17 @@ class CB.Application extends CB.Responder
   @property "readonly", "delegate"
 
   # The application's key window
-  # It's currently unused, use CB.Window.currentWindow instead
   #
-  @property "readonly", "keyWindow"
+  @property "readonly", "keyWindow",
+    get: () ->
+      return CB.Window.currentWindow()
+
 
   # The windows of this applications
-  # It's currently unused
   #
-  @property "readonly", "windows"
+  @property "readonly", "windows",
+    get: () ->
+      return [CB.Window.currentWindow()]
 
   # This is currently unused
   #
@@ -46,7 +51,8 @@ class CB.Application extends CB.Responder
 #
 class CB.ApplicationDelegate
 
-  constructor: () -> return
+  constructor: () ->
+    return
 
   # This is currently unused,
   # use applicationDidFinishLaunchingWithOptions instead.
@@ -56,21 +62,29 @@ class CB.ApplicationDelegate
   applicationDidFinishLaunchingWithOptions: (options) ->
     return
 
-# CB.Run(application: object, delegate: object, arguments: [])
-CB.Run = (options) ->
+CB.__constructWebLaunchingArguments = () ->
   options_argument =
     path: CB.Pather.sharedPather().currentPath()
-  if typeof options == 'function'
+  return options_argument
+
+
+# CB.Run(application: object, delegate: object, arguments: [])
+CB.Run = (user_options) ->
+  options_argument = CB.__constructWebLaunchingArguments()
+  if typeof user_options == 'function'
     $(document).ready ->
       CB.Application.sharedApplication.delegate = new CB.ApplicationDelegate
-      options(options_argument)
-      CB.DebugLog("Finished launching from an function!")
-  else if typeof options == 'object'
-    options.application ||= new CB.Application()
-    CB.Application.__shared = options.application
+      user_options(options_argument)
+  else if typeof user_options == 'object'
+    unless user_options.delegate
+      throw CB.ArgumentError("The object you passed into CB.Run should have a delegate object.")
+    user_options.application ||= new CB.Application()
+    CB.Application.__shared = user_options.application
     app = CB.Application.sharedApplication()
-    app._delegate = options.delegate
+    app._delegate = user_options.delegate
     $(document).ready ->
       app.delegate.applicationWillFinishLaunchingWithOptions(options_argument)
       app.finishLaunchingWithInfo()
       app.delegate.applicationDidFinishLaunchingWithOptions(options_argument)
+  else
+    throw CB.ArgumentError("CB.Run should receive an object or function.")

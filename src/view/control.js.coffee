@@ -71,7 +71,7 @@ class CB.Control extends CB.View
   @property "contentHorizontalAlignment"
 
   canBecomeFirstResponder: () ->
-    @enabled && @userInteractionEnabled && @alpha >= 0.01 && !@hidden
+    @enabled && super()
 
   __queryTargetActionEvent: (target, action, controlEvents) ->
     @items.filter (obj) ->

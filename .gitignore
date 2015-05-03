@@ -2,11 +2,7 @@
 /dist
 /test/**/*.js
 
-# Emacs plugin
-.tern-port
-
 # Xcode
-#
 Build/
 build/
 *.pbxuser
@@ -25,7 +21,6 @@ DerivedData
 *.ipa
 *.xcuserstate
 
-
 # Gem
 /.bundle/
 /.yardoc
@@ -41,3 +36,9 @@ DerivedData
 *.o
 *.a
 mkmf.log
+
+# OS X
+.DS_Store
+
+# Emacs plugins
+.tern-port

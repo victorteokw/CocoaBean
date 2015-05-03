@@ -45,3 +45,11 @@ class CB.Window extends CB.View
 
   nextResponder: () ->
     CB.Application.sharedApplication()
+
+  insertSubviewAtIndex: (subview, index) ->
+    super(subview, index)
+    subview._window = this
+
+  willRemoveSubview: (subview) ->
+    super(subview)
+    subview._window = null

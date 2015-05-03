@@ -10,7 +10,16 @@ Gem::Specification.new do |s|
   s.email         = ["yeannylam@gmail.com"]
   s.summary       = "The framework enables you to develop native \
 iOS app with javaScript."
-  s.description   = "Need description"
+  s.description   = %{
+CocoaBean is an object-oriented, MVC, cross-platform javaScript application framework.
+An application of CocoaBean can be generated into web app, iOS app, OS X app.
+Android and windows will be supported.
+
+You can create a new application by 'cocoabean new PATH'.
+
+Inside an application directory, use 'cocoabean test' to unit test your code,
+use 'cocoabean preview' to preview your app in a browser or iOS simulator.
+}
   s.homepage      = "https://github.com/cheunghy/CocoaBean"
   s.license       = "MIT"
 
@@ -19,15 +28,15 @@ iOS app with javaScript."
   s.test_files    = s.files.grep(%r{^(test|spec|features)/})
   s.require_paths = %w{ lib }
 
-  s.add_runtime_dependency 'cocoapods', '~> 0.35'
-  s.add_runtime_dependency 'xcodeproj'
-  s.add_runtime_dependency 'sprockets', '~> 2.12.3'
+  s.add_runtime_dependency 'cocoapods', '~> 0.36'
+  s.add_runtime_dependency 'sprockets', '~> 3.0'
+  s.add_runtime_dependency 'coffee-script', '~> 2.4'
+  s.add_runtime_dependency 'sprockets-es6', '~> 0.6'
+  s.add_runtime_dependency 'jasmine', '~> 2.3'
+  s.add_runtime_dependency 'uglifier', '~> 2.7'
 
-  s.add_development_dependency 'bundler', '~> 1.7'
-  s.add_development_dependency 'rake', '~> 10.0'
-  s.add_development_dependency 'jasmine', '~> 2.2'
-  s.add_development_dependency 'coffee-script', '~> 2.4'
-  s.add_development_dependency 'uglifier', '~> 2.7'
-  # s.add_development_dependency 'babel-transpiler'
+  s.add_development_dependency 'bundler', '~> 1.9'
+  s.add_development_dependency 'rake', '~> 10.4'
+
   s.required_ruby_version = '>= 2.0.0'
 end

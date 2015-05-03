@@ -1,4 +1,3 @@
-# Require CocoaBean::VERSION
 require_relative 'lib/cocoa_bean/version'
 
 # This is duplicated. # Todo: remove this.

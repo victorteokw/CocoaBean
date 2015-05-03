@@ -16,6 +16,7 @@ class CB.ViewController extends CB.Responder
   # This method does not take any parameters.
   #
   constructor: () ->
+    super()
 
   @property "readonly", "renderDelegate",
     get: () -> CB.Renderer.sharedRenderer()
@@ -57,13 +58,19 @@ class CB.ViewController extends CB.Responder
   @property "parentViewController"
 
   addChildViewController: (child) ->
+    if child.parentViewController
+      child.removeFromParentViewController()
+    child.willMoveToParentViewController(this)
     @childViewControllers.push(child)
+    child.parentViewController = this
     return
 
   removeFromParentViewController: () ->
+    return unless @parentViewController
     index = @parentViewController.childViewControllers.indexOf(this)
     index > -1 && @parentViewController.childViewControllers.splice(index, 1)
     @parentViewController = null
+    this.didMoveToParentViewController(null)
     return
 
   willMoveToParentViewController: (parent) ->

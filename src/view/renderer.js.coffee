@@ -184,6 +184,12 @@ class CB.Renderer
     view._layer = view.layerDescription()
     view._layer.data("view", view)
     view._layer.css("position", "absolute")
+    view._layer.css("-webkit-touch-callout", "none")
+    view._layer.css("-webkit-user-select", "none")
+    view._layer.css("-moz-user-select", "-moz-none")
+    view._layer.css("-ms-user-select", "none")
+    view._layer.css("user-select", "none")
+    return
 
   viewForLayer: (layer) ->
     layer.data("view")
@@ -213,8 +219,15 @@ class CB.Renderer
   viewWillRemoveFromSuperview: (view) ->
     view.layer.remove()
 
-  viewDidAddSubview: (superview, subview) ->
-    superview.layer.append(subview.layer)
+  viewDidAddSubviewAtIndex: (superview, subview, index) ->
+    if index == superview.subviews.length
+      superview.layer.append(subview.layer)
+    else if index == 0
+      superview.layer.prepend(subview.layer)
+    else
+      l = superview.subviews[index - 1].layer
+      l.after(subview.layer)
+    return
 
   applyFrameForView: (view) ->
     view.layer.css("left", view.frame.origin.x)

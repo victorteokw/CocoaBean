@@ -16,10 +16,11 @@ class CB.View extends CB.Responder
     @_subviews = []
     @_clipsToBounds = false
     @_userInteractionEnabled = true
-    @_alpha = 1
+    @_alpha = 1.0
     @_hidden = false
     @clipsToBounds = true
     @_cornerRadius = 0
+    @_window = null
 
   # pragma mark - Render
 
@@ -32,11 +33,6 @@ class CB.View extends CB.Responder
     get: ->
       if !@_layer
         @renderDelegate.loadLayerForView(this)
-        @_layer.css("-webkit-touch-callout", "none")
-        @_layer.css("-webkit-user-select", "none")
-        @_layer.css("-moz-user-select", "-moz-none")
-        @_layer.css("-ms-user-select", "none")
-        @_layer.css("user-select", "none")
       return @_layer
 
   layerDescription: () ->
@@ -49,37 +45,52 @@ class CB.View extends CB.Responder
   @property "readonly", "superview"
 
   addSubview: (subview) ->
-    subview.willMoveToSuperview(this)
-    subview.willMoveToWindow(@window)
-    subview._superview = this
-    Array.prototype.push.apply(@_subviews, [subview])
-    @renderDelegate.viewDidAddSubview(this, subview)
-    subview.didMoveToSuperview(this)
-    subview.didMoveToWindow(@window)
-    this.didAddSubview(subview)
-    return
+    this.insertSubviewAtIndex(subview, @subviews.length)
 
   removeFromSuperview: () ->
+    return unless @superview
     @superview.willRemoveSubview(this)
+    this.willMoveToSuperview(null)
+    this.willMoveToWindow(null)
     @renderDelegate.viewWillRemoveFromSuperview(this)
     index = @superview.subviews.indexOf(this)
     index > -1 && @superview.subviews.splice(index, 1)
     @_superview = null
+    this.didMoveToSuperview(null)
+    this.didMoveToWindow(null)
     return
 
   bringSubviewToFront: (view) ->
 
   sendSubviewToBack: (view) ->
 
-  insertSubviewAtIndex: (view, index) ->
+  insertSubviewAtIndex: (subview, index) ->
+    if subview == this
+      throw "View cannot add self as subview!"
+    if subview.superview
+      subview.removeFromSuperview()
+    subview.willMoveToSuperview(this)
+    subview.willMoveToWindow(@window)
+    subview._superview = this
+    Array.prototype.splice.apply(@_subviews, [index, 0, subview])
+    @renderDelegate.viewDidAddSubviewAtIndex(this, subview, index)
+    subview.didMoveToSuperview(this)
+    subview.didMoveToWindow(@window)
+    this.didAddSubview(subview)
+    return
 
   insertSubviewAboveSubview: (newSubview, subview) ->
+    index = @subviews.indexOf(subview)
+    this.insertSubviewAtIndex(newSubview, index + 1)
 
   insertSubviewBelowSubview: (newSubview, subview) ->
+    index = @subviews.indexOf(subview)
+    this.insertSubviewAtIndex(newSubview, index)
 
   exchangeSubviewAtIndexWithSubviewAtIndex:(index1, index2) ->
 
   isDescendantOfView: (view) ->
+    this.isDescendantOf(view)
 
   # pragma mark - Hooks
 
@@ -110,6 +121,8 @@ class CB.View extends CB.Responder
       y = @frame.origin.y
       @frame = new CB.Rect(x, y, newValue.width, newValue.height)
       return
+    get: () ->
+      new CB.Rect(0, 0, @frame.width, @frame.height)
 
   # Center of view to the super view coordinate.
   #
@@ -127,7 +140,6 @@ class CB.View extends CB.Responder
       x = @frame.origin.x + @frame.size.width / 2
       y = @frame.origin.y + @frame.size.height / 2
       new CB.Point(x, y)
-
 
   @property "alpha",
     set: (newAlpha) ->
@@ -181,14 +193,14 @@ class CB.View extends CB.Responder
     @frame.size
 
   sizeToFit: () ->
-    @frame = this.sizeThatFits(size)
+    size = this.sizeThatFits(size)
+    @frame = new CB.Rect(@frame.x, @frame.y, size.width, size.height)
 
   setNeedsLayout: () ->
     @renderDelegate.viewNeedsLayout(this)
 
   layoutIfNeeded: () ->
     @renderDelegate.viewNeedsLayout(this)
-
 
   nextResponder: () ->
     return @viewController if @viewController
@@ -203,7 +215,7 @@ class CB.View extends CB.Responder
   ancestorSharedWithView: (view) ->
     # Implementation from
     # http://stackoverflow.com/questions/22666535/shared-ancestor-between-two-views
-    return nil unless view
+    return null unless view
     return this if view == this
     return this if view.superview == this
     if this.superview
