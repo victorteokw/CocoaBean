@@ -6,7 +6,7 @@ module CocoaBean
 
       self.summary = 'Generate a cocoa bean project'
       self.description = <<-DESC
-Generate a cocoa bean project.
+This command generates a cocoa bean project.
       DESC
 
       self.arguments = [CLAide::Argument.new('APP_PATH', true)]

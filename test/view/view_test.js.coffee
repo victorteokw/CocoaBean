@@ -252,3 +252,7 @@ describe "CB.View", ->
   describe "converts point ", ->
     it "to view", ->
       pending("Not test yet")
+
+  describe "point inside and hit test", ->
+    it "...", ->
+      pending("Not test yet")

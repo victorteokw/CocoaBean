@@ -6,6 +6,7 @@ module CocoaBean
     class << self
       def beanfile_required!
         @beanfile_required = true
+        load beanfile_location
       end
 
       def beanfile_required?
@@ -41,6 +42,11 @@ If you find any bugs or if you have feature request, welcome to fire an issue he
 
 Thanks for downloading and using CocoaBean.
 DESC
+
+    def run
+      help!
+    end
+
     def validate!
       if self.class.beanfile_required?
       help! 'You should run this command inside a cocoa bean application directory.' unless beanfile_location

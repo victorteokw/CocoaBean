@@ -12,7 +12,6 @@ This commmand open the editor specified by 'Beanfile'.
       beanfile_required!
 
       def run
-        load beanfile_location
         begin
           app = CocoaBean::Application.only_app
           editor = app.editor || ENV['VISUAL'] || ENV['EDITOR']

@@ -6,8 +6,8 @@ class ApplicationTest < Minitest::Test
     @app = CocoaBean::Application.new do |app|
       app.name = '제빵왕 김탁구'
       app.version = '1.2'
-      app.supported_platform = ['ios', 'osx', 'web']
       app.editor = 'emacs'
+      app.platform :web
     end
     @second = nil
   end
@@ -25,12 +25,48 @@ class ApplicationTest < Minitest::Test
     assert_equal @app.version, '1.2'
   end
 
-  def test_app_has_supported_platform
-    assert_equal @app.supported_platform, ['ios', 'osx', 'web']
-  end
-
   def test_app_has_editor
     assert_equal @app.editor, 'emacs'
+  end
+
+  def test_code_location_by_default_is_app
+    assert_equal @app.code_location, 'app'
+  end
+
+  def test_assets_location_by_default_is_assets
+    assert_equal @app.assets_location, 'assets'
+  end
+
+  def test_distribution_directory_by_default_is_dist
+    assert_equal @app.distribution_directory, 'dist'
+  end
+
+  def test_platform_has_some_default_value
+    p = @app.get_platform(:web)
+    assert_equal 'Web Browser', p.readable_name
+    assert_equal true, p.supported
+    assert_equal 'web', p.code_location
+    assert_equal 'dist/web', p.distribution_directory
+  end
+
+  def test_to_s
+    s = @app.to_s
+    assert_match "#{@app.version}", s
+    assert_match "#{@app.name}", s
+    assert_match "#{@app.editor}", s
+    assert_match "#{@app.code_location}", s
+    assert_match "#{@app.assets_location}", s
+    assert_match "#{@app.distribution_directory}", s
+  end
+
+  def test_verify_platform_name
+    assert_raises CocoaBean::Application::PlatformNameError do
+      @app = CocoaBean::Application.new do |app|
+        app.name = "Name"
+        app.version = '1.0'
+        app.platform :not
+      end
+    end
   end
 
   def test_all_application
@@ -46,7 +82,7 @@ class ApplicationTest < Minitest::Test
 
   def test_only_app_throws_if_not_only_one
     @second = CocoaBean::Application.new do |app|
-      app.name = '옥탑방 왕세자'
+      app.name = "옥탑방 왕세자"
     end
     assert_raises CocoaBean::Application::ApplicationCountError do
       CocoaBean::Application.only_app
