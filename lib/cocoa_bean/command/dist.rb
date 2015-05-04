@@ -1,26 +1,39 @@
 module CocoaBean
   class Command
     class Dist < Command
-      self.summary = 'generate application.js into target applications'
+      self.summary = 'Generate distribution package or product of this cocoabean application'
 
       self.description = <<-DESC
-        This command generate application.js into target applications.
+        This command generates distribution package to directory specified in Beanfile.
+        The distribution directory is default to dist/PLATFORM_SHORT_NAME,
+        such as dist/web, dist/and, dist/ios
       DESC
+
+      def self.options
+        [
+          ['--dest', 'The distribution location override the Beanfile value.']
+        ].concat(super)
+      end
+
+      self.arguments = [CLAide::Argument.new('PLATFORM', true)]
 
       beanfile_required!
 
-      def run
-        generate_application_js
+      def initialize(argv)
+        super
+        @platform = argv.shift_argument
+        @destination = argv.option('dest')
       end
 
-      # Duplicate code
-      def generate_application_js
-        require 'sprockets'
-        environment = Sprockets::Environment.new
-        environment.append_path('app')
-        js = environment['build.js'].to_s
-        File.write(File.expand_path('web/application.js', beanfile_directory), js)
-        puts "web/application.js generated"
+      def validate!
+        super
+        help! 'Provide a platform is required.' unless @platform
+        help! 'Platform is not supported by this app.' unless @app.supported_platforms.include? @platform
+      end
+
+      def run
+        dist = CocoaBean::Distributor.platform_distributor(@platform, @app, @destination)
+        dist.distribute
       end
     end
   end

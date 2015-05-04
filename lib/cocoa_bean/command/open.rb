@@ -20,7 +20,6 @@ This commmand open the editor specified by 'Beanfile'.
 
       def initialize(argv)
         super
-        @app = CocoaBean::Application.only_app
         @editor = argv.option('editor') || @app.editor || ENV['VISUAL'] || ENV['EDITOR']
         @root = argv.flag?('root', false)
       end

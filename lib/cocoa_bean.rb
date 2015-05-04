@@ -4,4 +4,5 @@ module CocoaBean
   autoload :Generator, 'cocoa_bean/generator'
   autoload :Application, 'cocoa_bean/application'
   autoload :Platform, 'cocoa_bean/platform'
+  autoload :Distributor, 'cocoa_bean/distributor'
 end

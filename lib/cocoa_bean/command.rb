@@ -59,7 +59,11 @@ DESC
 
     def initialize(argv)
       super
-      load beanfile_location if self.class.beanfile_required?
+      if self.class.beanfile_required?
+        load beanfile_location
+        @app = CocoaBean::Application.only_app
+        @app.root_directory = beanfile_directory
+      end
     end
 
     def beanfile_directory(current_dir = nil)

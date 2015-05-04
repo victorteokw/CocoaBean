@@ -9,6 +9,7 @@ module CocoaBean
       @code_location = 'app'
       @assets_location = 'assets'
       @distribution_directory = 'dist'
+      @temporary_directory = 'tmp'
       yield self
     end
 
@@ -19,6 +20,19 @@ module CocoaBean
     attr_accessor :code_location
     attr_accessor :assets_location
     attr_accessor :distribution_directory
+
+    attr_accessor :temporary_directory
+    attr_accessor :test_directory
+
+    def spec_directory
+      test_directory
+    end
+
+    def spec_directory=(new_value)
+      test_directory = new_value
+    end
+
+    attr_accessor :root_directory
 
     def platform(name)
       verify_name!(name)
@@ -32,11 +46,19 @@ module CocoaBean
     end
 
     def get_platform(name)
+      raise "platform name shouldn't be nil!"if name.nil?
       @platforms[name.to_sym]
     end
 
     def platforms
       @platforms.values
+    end
+
+    def supported_platforms
+      retVal = platforms.reject do |p|
+        p.supported = false
+      end
+      retVal.map {|p| p.name}
     end
 
     def to_s

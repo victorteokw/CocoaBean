@@ -8,17 +8,17 @@ module CocoaBean
 
       self.arguments = [CLAide::Argument.new('PLATFORM', true)]
 
+      beanfile_required!
+
       def initialize(argv)
         super
         @platform = argv.shift_argument
       end
 
-      beanfile_required!
-
       def validate!
         super
         help! 'Provide a platform is required.' unless @platform
-        help! 'Platform should be either web or native.' unless ['web', 'ios', 'osx'].include? @platform
+        help! 'Platform is not supported by this app.' unless @app.supported_platforms.include? @platform
       end
 
       def run
