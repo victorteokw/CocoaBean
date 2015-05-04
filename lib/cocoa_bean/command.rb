@@ -6,7 +6,6 @@ module CocoaBean
     class << self
       def beanfile_required!
         @beanfile_required = true
-        load beanfile_location
       end
 
       def beanfile_required?
@@ -56,6 +55,11 @@ DESC
     def warning_and_exit(message)
       puts ('[!] ' + message).red
       exit 1
+    end
+
+    def initialize(argv)
+      super
+      load beanfile_location if self.class.beanfile_required?
     end
 
     def beanfile_directory(current_dir = nil)
