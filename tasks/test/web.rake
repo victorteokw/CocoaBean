@@ -62,19 +62,23 @@ namespace :test do
         # Temporarily hard code
         conf.src_dir = File.expand_path('../dist/web', args[:temp_dir])
         conf.spec_dir = File.expand_path('test', args[:temp_dir])
-        conf.src_files = lambda {Dir[File.expand_path("**/*.js", conf.src_dir)]}
+        conf.src_files = lambda {Dir[File.expand_path("**/application.js", conf.src_dir)]}
         conf.spec_files = lambda {Dir[File.expand_path("**/*[sStT][pe][es][ct].js", conf.spec_dir)]}
+        conf.boot_dir = File.expand_path('../dist/web', args[:temp_dir])
+        boot_files = Dir[File.expand_path("**/*.js", conf.boot_dir)]
+        boot_files.reject! {|f| f.match(/application/)}
+        conf.boot_files = lambda {boot_files}
       end
-#      ci_runner = Jasmine::CiRunner.new(Jasmine.config)
-#      exit(1) unless ci_runner.run
-      config = Jasmine.config
-      port = config.port(:server)
-      server = Jasmine::Server.new(port, Jasmine::Application.app(Jasmine.config), config.rack_options)
-      puts "your server is running here: http://localhost:#{port}/"
-      puts "your tests are here:         #{config.spec_dir}"
-      puts "your source files are here:  #{config.src_dir}"
-      puts ''
-      server.start
+      ci_runner = Jasmine::CiRunner.new(Jasmine.config)
+      exit(1) unless ci_runner.run
+#      config = Jasmine.config
+#      port = config.port(:server)
+#      server = Jasmine::Server.new(port, Jasmine::Application.app(Jasmine.config), config.rack_options)
+#      puts "your server is running here: http://localhost:#{port}/"
+#      puts "your tests are here:         #{config.spec_dir}"
+#      puts "your source files are here:  #{config.src_dir}"
+#      puts ''
+#      server.start
     end
   end
 end
