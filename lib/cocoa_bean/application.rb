@@ -10,6 +10,7 @@ module CocoaBean
       @assets_location = 'assets'
       @distribution_directory = 'dist'
       @temporary_directory = 'tmp'
+      @test_directory = "test"
       yield self
     end
 
@@ -29,7 +30,7 @@ module CocoaBean
     end
 
     def spec_directory=(new_value)
-      test_directory = new_value
+      self.test_directory = new_value
     end
 
     attr_accessor :root_directory

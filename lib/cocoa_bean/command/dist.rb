@@ -32,8 +32,11 @@ module CocoaBean
       end
 
       def run
-        dist = CocoaBean::Distributor.platform_distributor(@platform, @app, @destination)
-        dist.distribute
+        app_source = @app.code_location
+        web_source = @app.get_platform(@platform).code_location
+        ass_source = @app.assets_location
+        dest = @destination || @app.get_platform(@platform).distribution_directory
+        CocoaBean::Task.invoke("dist:#@platform:all", app_source, web_source, ass_source, dest)
       end
     end
   end
