@@ -2,6 +2,7 @@ module CocoaBean
   class Command
     class Preview < Command
       self.summary = 'Preview an cocoa bean application'
+
       self.description = <<-DESC
         Open web browser or iOS simulator to see and debug the application.\n
       DESC
@@ -9,37 +10,25 @@ module CocoaBean
       self.arguments = [CLAide::Argument.new('PLATFORM', true)]
 
       beanfile_required!
+      validate_platform!
 
       def initialize(argv)
         super
         @platform = argv.shift_argument
       end
 
-      def validate!
-        super
-        help! 'Provide a platform is required.' unless @platform
-        help! 'Platform is not supported by this app.' unless @app.supported_platforms.include? @platform
-      end
-
       def run
-        generate_application_js
-        preview_web
+        temp = @app.full_path(@app.temporary_directory)
+        app_source = @app.full_path(@app.code_location)
+        web_source = @app.full_path(@app.get_platform(@platform).code_location)
+        ass_source = @app.full_path(@app.assets_location)
+        CocoaBean::Task.invoke("prev:#@platform:all",
+                               temp,
+                               app_source,
+                               web_source,
+                               ass_source)
       end
 
-      # Duplicate code
-      def generate_application_js
-        require 'sprockets'
-        environment = Sprockets::Environment.new
-        environment.append_path('app')
-        js = environment['build.js'].to_s
-        File.write(File.expand_path('web/application.js', beanfile_directory), js)
-        puts "web/application.js generated"
-      end
-
-      def preview_web
-        system("open '#{File.expand_path('web/index.html', beanfile_directory)}'")
-        puts "Let's preview on web"
-      end
     end
   end
 end

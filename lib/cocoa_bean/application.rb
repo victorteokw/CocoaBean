@@ -3,6 +3,7 @@ module CocoaBean
 
     class ApplicationCountError < RuntimeError; end
     class PlatformNameError < RuntimeError; end
+    class ApplicationRootDirectoryUnsetError < RuntimeError; end
 
     def initialize
       @platforms = {}
@@ -24,6 +25,12 @@ module CocoaBean
 
     attr_accessor :temporary_directory
     attr_accessor :test_directory
+
+    def full_path(relative_path)
+      raise ApplicationRootDirectoryUnsetError if !root_directory
+      raise ArgumentError.new("relative path should not be nil") if relative_path.nil?
+      File.expand_path(relative_path, root_directory)
+    end
 
     def spec_directory
       test_directory

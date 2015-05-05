@@ -7,25 +7,36 @@ module CocoaBean
         This command generates unit test code and run unit test for the CocoaBean application.
       DESC
 
+      def self.options
+        [
+          ['--browser', 'Use browser instead of ci']
+        ].concat(super)
+      end
+
       self.arguments = [CLAide::Argument.new('PLATFORM', true)]
 
       beanfile_required!
+      validate_platform!
 
       def initialize(argv)
         super
         @platform = argv.shift_argument
-      end
-
-      def validate!
-        super
-        help! 'Provide a platform is required.' unless @platform
-        help! 'Platform is not supported by this app.' unless @app.supported_platforms.include? @platform
+        @browser = argv.flag?('browser', false)
       end
 
       def run
-        app_test_source = File.expand_path(@app.test_directory, @app.root_directory)
-        temp = File.expand_path(@app.temporary_directory, @app.root_directory)
-        CocoaBean::Task.invoke("test:#@platform:all", app_test_source, temp)
+        app_test_source = @app.full_path(@app.test_directory)
+        temp = @app.full_path(@app.temporary_directory)
+        app_source = @app.full_path(@app.code_location)
+        web_source = @app.full_path(@app.get_platform(@platform).code_location)
+        ass_source = @app.full_path(@app.assets_location)
+        CocoaBean::Task.invoke("test:#@platform:all",
+                               app_test_source,
+                               temp,
+                               @browser,
+                               app_source,
+                               web_source,
+                               ass_source)
       end
     end
   end

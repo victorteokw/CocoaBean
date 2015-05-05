@@ -2,6 +2,7 @@ module CocoaBean
   class Task
     def self.invoke(task_name, *args)
       require 'rake'
+      require File.expand_path('helpers/build_js.rb', self.root_directory_of_tasks)
       load_rake_file_for_task_named(task_name)
       Rake::Task[task_name].invoke(*args)
     end

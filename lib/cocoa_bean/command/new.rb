@@ -28,7 +28,7 @@ This command generates a cocoa bean project.
             @#{platform_name} = argv.flag? '#{platform_name}', true
           )
         end
-        @lang = argv.option('lang', 'es6')
+        @lang = argv.option('lang') || CocoaBean::Preferences.instance.lang || 'es6'
         @app_path = argv.shift_argument
       end
 
