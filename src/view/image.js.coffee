@@ -19,4 +19,4 @@ class CB.Image
       if @url
         @url
       else
-        "images/" + @name
+        "assets/" + @name

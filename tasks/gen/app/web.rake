@@ -21,7 +21,11 @@ namespace :gen do
         sources.map do |s|
           target = s.gsub(args[:source], args[:dest])
           file target => s do
-            sh "cp #{s} #{target}"
+            if File.directory?(s)
+              sh "mkdir -p #{target}"
+            else
+              sh "cp #{s} #{target}"
+            end
           end
           Rake::Task[target].invoke
         end
@@ -58,13 +62,19 @@ namespace :gen do
       end
 
       task :cp_user_assets, :source, :dest do |t, args|
-        assets_from = File.expand_path('assets', args[:source])
-        if File.exist? assets_from
+        if File.directory? args[:source]
+          assets_dir = File.expand_path('assets', args[:dest])
+          directory assets_dir
+          Rake::Task[assets_dir].invoke
           sources = Rake::FileList.new(File.expand_path('**/*', args[:source]))
           sources.map do |s|
             target = s.gsub(args[:source], File.expand_path('assets', args[:dest]))
             file target => s do
-              sh "cp #{s} #{target}"
+              if File.directory?(s)
+                sh "mkdir -p #{target}"
+              else
+                sh "cp #{s} #{target}"
+              end
             end
             Rake::Task[target].invoke
           end
