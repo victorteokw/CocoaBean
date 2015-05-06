@@ -35,7 +35,7 @@ class CB.Window extends CB.View
   @property "frame",
     set: (newValue) -> return
     get: ->
-      new CB.Rect(0, 0, $(window).width(), $(window).height())
+      new CB.Rect(0, 0, window.innerWidth, window.innerHeight)
 
   layoutSubviews: () ->
     @_rootView.frame = new CB.Rect(0, 0, @frame.width, @frame.height)

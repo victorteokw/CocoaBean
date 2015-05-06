@@ -249,10 +249,78 @@ describe "CB.View", ->
       ancestor = view.ancestorSharedWithView(anotherView)
       expect(ancestor).toBe(superview)
 
-  describe "converts point ", ->
-    it "to view", ->
-      pending("Not test yet")
+  describe "converts ", ->
+    view2 = null
+    superview = null
+    beforeEach ->
+      view2 = new CB.View
+      superview = new CB.View
+      superview.addSubview(view)
+      superview.addSubview(view2)
+      CB.Window.currentWindow().addSubview(superview)
+      superview.frame = new CB.Rect(10, 10, 50, 50)
+      view.frame = new CB.Rect(5, 5, 20, 20)
+      view2.frame = new CB.Rect(7, 7, 30, 30)
+    afterEach ->
+      superview.removeFromSuperview()
+    describe "point ", ->
+      it "to view", ->
+        expect(view.convertPointToView(new CB.Point(3, 3), view2)).toEqual(new CB.Point(1, 1))
+      it "from view", ->
+        expect(view.convertPointFromView(new CB.Point(3, 3), view2)).toEqual(new CB.Point(5, 5))
+    describe "rect ", ->
+      it "to view", ->
+        expect(view.convertRectToView(new CB.Rect(3, 3, 2, 2), view2)).toEqual(new CB.Rect(1, 1, 2, 2))
+      it "from view", ->
+        expect(view.convertRectFromView(new CB.Rect(3, 3, 2, 2), view2)).toEqual(new CB.Rect(5, 5, 2, 2))
 
-  describe "point inside and hit test", ->
-    it "...", ->
-      pending("Not test yet")
+  describe "point inside", ->
+    it "if rect contains", ->
+      view.frame = new CB.Rect(123, 123, 30, 30)
+      expect(view.pointInsideWithEvent(new CB.Point(0, 0))).toBe(true)
+      expect(view.pointInsideWithEvent(new CB.Point(15, 15))).toBe(true)
+      expect(view.pointInsideWithEvent(new CB.Point(30, 30))).toBe(true)
+      expect(view.pointInsideWithEvent(new CB.Point(16, 31))).toBe(false)
+      expect(view.pointInsideWithEvent(new CB.Point(31, 31))).toBe(false)
+  describe "hit test", ->
+    describe "will return null ", ->
+      it "if view is hidden", ->
+        view.hidden = true
+        expect(view.hitTestWithEvent(new CB.Point(0, 0))).toBe(null)
+      it "if user interaction is disabled", ->
+        view.userInteractionEnabled = false
+        expect(view.hitTestWithEvent(new CB.Point(0, 0))).toBe(null)
+      it "view has a low alpha less than 0.01", ->
+        view.alpha = '0.005'
+        expect(view.hitTestWithEvent(new CB.Point(0, 0))).toBe(null)
+    describe "will return top most view: ", ->
+      it "case 1", ->
+        view2 = new CB.View(new CB.Rect(5, 5, 10, 10))
+        view3 = new CB.View(new CB.Rect(5, 5, 5, 5))
+        view4 = new CB.View(new CB.Rect(0, 0, 4, 4))
+        view.frame = new CB.Rect(0, 0, 100, 100)
+        view.addSubview(view2)
+        view.addSubview(view3)
+        view3.addSubview(view4)
+        retView = view.hitTestWithEvent(new CB.Point(6, 6))
+        expect(retView).toBe(view4)
+      it "case 2", ->
+        view2 = new CB.View(new CB.Rect(5, 5, 10, 10))
+        view3 = new CB.View(new CB.Rect(10, 10, 5, 5))
+        view4 = new CB.View(new CB.Rect(0, 0, 4, 4))
+        view.frame = new CB.Rect(0, 0, 100, 100)
+        view.addSubview(view2)
+        view.addSubview(view3)
+        view3.addSubview(view4)
+        retView = view.hitTestWithEvent(new CB.Point(6, 6))
+        expect(retView).toBe(view2)
+      it "case 3", ->
+        view2 = new CB.View(new CB.Rect(5, 5, 10, 10))
+        view3 = new CB.View(new CB.Rect(10, 10, 5, 5))
+        view4 = new CB.View(new CB.Rect(0, 0, 4, 4))
+        view.frame = new CB.Rect(0, 0, 100, 100)
+        view.addSubview(view2)
+        view.addSubview(view3)
+        view3.addSubview(view4)
+        retView = view.hitTestWithEvent(new CB.Point(1, 1))
+        expect(retView).toBe(view)

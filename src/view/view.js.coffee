@@ -248,7 +248,7 @@ class CB.View extends CB.Responder
 
   convertRectToView: (rect, view) ->
     s = rect.size
-    p = convertPointToView(rect.origin, view)
+    p = this.convertPointToView(rect.origin, view)
     return new CB.Rect(p.x, p.y, s.width, s.height)
 
   convertRectFromView: (rect, view) ->
@@ -267,7 +267,7 @@ class CB.View extends CB.Responder
       thatView = null
       thatPoint = null
       for subview in @subviews.reverse()
-        p = this.convertPointToView(subview)
+        p = this.convertPointToView(point, subview)
         if subview.pointInsideWithEvent(p, event)
           thatView = subview
           thatPoint = p
