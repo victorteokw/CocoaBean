@@ -1,7 +1,10 @@
 #= require header
-#= require support/accessor
 #= require support/dispatch
 #= require support/log
+#= require support/accessor
+#= require support/string
+#= require support/array
+#= require support/object
 #= require model/argument_error
 #= require view/point
 #= require view/size

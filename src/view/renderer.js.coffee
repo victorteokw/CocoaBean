@@ -220,10 +220,14 @@ class CB.Renderer
     view.layer.remove()
 
   viewDidAddSubviewAtIndex: (superview, subview, index) ->
+    layerToAddTo = if superview instanceof CB.ScrollView
+                     superview.contentLayer
+                   else
+                     superview.layer
     if index == superview.subviews.length
-      superview.layer.append(subview.layer)
+      layerToAddTo.append(subview.layer)
     else if index == 0
-      superview.layer.prepend(subview.layer)
+      layerToAddTo.prepend(subview.layer)
     else
       l = superview.subviews[index - 1].layer
       l.after(subview.layer)
