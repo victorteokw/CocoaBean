@@ -1,7 +1,7 @@
 # CocoaBean
 [![Build status](https://travis-ci.org/cheunghy/CocoaBean.svg?branch=master)](https://travis-ci.org/cheunghy/CocoaBean)
 
-CocoaBean is an multi-platform javaScript framework. It uses real OOP and MVC. It tries to mimic local app development just like Android and iOS. Currently, the api structure is nearly the same as Apple's Cocoa and Cocoa Touch framework. In the future, it may change or may not change. It depends. However and always, one native style code base can generate multiple apps with javaScript.
+CocoaBean is a multi-platform javaScript framework. It uses real OOP and MVC. It tries to mimic local app development just like Android and iOS. Currently, the api structure is nearly the same as Apple's Cocoa and Cocoa Touch framework. In the future, it may change or may not change. It depends. However and always, one native style code base can generate multiple apps with javaScript.
 
 ## How to try it out?
 Clone the framework to your local directory

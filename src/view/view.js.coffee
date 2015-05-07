@@ -53,8 +53,7 @@ class CB.View extends CB.Responder
     this.willMoveToSuperview(null)
     this.willMoveToWindow(null)
     @renderDelegate.viewWillRemoveFromSuperview(this)
-    index = @superview.subviews.indexOf(this)
-    index > -1 && @superview.subviews.splice(index, 1)
+    @superview.subviews.remove(this)
     @_superview = null
     this.didMoveToSuperview(null)
     this.didMoveToWindow(null)

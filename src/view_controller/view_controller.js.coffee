@@ -67,8 +67,7 @@ class CB.ViewController extends CB.Responder
 
   removeFromParentViewController: () ->
     return unless @parentViewController
-    index = @parentViewController.childViewControllers.indexOf(this)
-    index > -1 && @parentViewController.childViewControllers.splice(index, 1)
+    @parentViewController.childViewControllers.remove(this)
     @parentViewController = null
     this.didMoveToParentViewController(null)
     return
