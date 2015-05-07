@@ -2,20 +2,32 @@
 #
 class CB.ScrollView extends CB.View
 
-  @property "contentSize", ->
+  constructor: (frame) ->
+    super(frame)
+    @css("overflow", "scroll")
+    @_scrollEnabled = true
+    @_contentSize = new CB.Size(0, 0)
+
+  @property "readonly", "contentLayer",
+    get: ->
+      if !@_contentLayer
+        @renderDelegate.loadLayerForView(this)
+      return @_contentLayer
+
+  @property "contentSize",
     set: (newValue) ->
       @_contentSize = newValue
-      @contentLayer.width = newValue.width
-      @contentLayer.height = newValue.height
+      @contentLayer.width(newValue.width)
+      @contentLayer.height(newValue.height)
 
-  @property "contentOffset", ->
+  @property "contentOffset",
     set: (newValue) ->
       @contentLayer.scrollLeft = newValue.width
       @contentLayer.scrollTop = newValue.height
     get: () ->
       new CB.Size(@contentLayer.scrollLeft, @contentLayer.scrollTop)
 
-  @property "bounds", ->
+  @property "bounds",
     set: (newValue) ->
       @contentOffset = new CB.Size(newValue.x, newValue.y)
       x = @frame.origin.x
@@ -24,7 +36,7 @@ class CB.ScrollView extends CB.View
     get: () ->
       new CB.Rect(@contentOffset.width, @contentOffset.height, @frame.width, @frame.height)
 
-  @property "scrollEnabled", ->
+  @property "scrollEnabled",
     set: (newValue) ->
       @_scrollEnabled = newValue
       if newValue == false
@@ -57,10 +69,3 @@ class CB.ScrollView extends CB.View
   @property "scrollIndicatorInsets"
 
   flashScrollIndicators: () ->
-
-  layerDescription: () ->
-    parent = $("<div></div>")
-    child = $("<div></div>")
-    parent.append(child)
-    @contentLayer = child
-    return parent

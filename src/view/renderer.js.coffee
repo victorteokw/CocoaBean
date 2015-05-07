@@ -181,7 +181,18 @@ class CB.Renderer
 
   loadLayerForView: (view) ->
     return if view._layer
-    view._layer = view.layerDescription()
+    if view instanceof CB.ScrollView
+      view._layer = $("<div></div>")
+      view._contentLayer = $("<div></div>")
+      view._contentLayer.css("position", "absolute")
+      view._contentLayer.css("-webkit-touch-callout", "none")
+      view._contentLayer.css("-webkit-user-select", "none")
+      view._contentLayer.css("-moz-user-select", "-moz-none")
+      view._contentLayer.css("-ms-user-select", "none")
+      view._contentLayer.css("user-select", "none")
+      view._layer.append(view._contentLayer)
+    else
+      view._layer = view.layerDescription()
     view._layer.data("view", view)
     view._layer.css("position", "absolute")
     view._layer.css("-webkit-touch-callout", "none")
