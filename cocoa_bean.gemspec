@@ -1,25 +1,18 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+
 require 'cocoa_bean/version'
+require 'cocoa_bean/description'
 
 Gem::Specification.new do |s|
   s.name          = "cocoabean"
   s.version       = CocoaBean::VERSION
   s.authors       = ["Zhang Kai Yu"]
   s.email         = ["yeannylam@gmail.com"]
-  s.summary       = "The framework enables you to develop native \
-iOS app with javaScript."
-  s.description   = %{
-CocoaBean is an object-oriented, MVC, cross-platform javaScript application framework.
-An application of CocoaBean can be generated into web app, iOS app, OS X app.
-Android and windows will be supported.
+  s.summary       = "Write a single code base in javaScript, and deploy everywhere."
+  s.description   = CocoaBean::DESCRIPTION
 
-You can create a new application by 'cocoabean new PATH'.
-
-Inside an application directory, use 'cocoabean test' to unit test your code,
-use 'cocoabean preview' to preview your app in a browser or iOS simulator.
-}
   s.homepage      = "https://github.com/cheunghy/CocoaBean"
   s.license       = "MIT"
 

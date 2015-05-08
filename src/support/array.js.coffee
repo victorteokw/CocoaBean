@@ -39,27 +39,27 @@ Array::count = () ->
 Array::size = () ->
   this.length
 
-# Array::reduce = (initial, iteratee) ->
-#   if !iteratee
-#     iteratee = initial
-#     initial = undefined
-#   i = 0; len = this.length
-#   if typeof initial == "undefined"
-#     memo = this[i]
-#     i++
-#   else
-#     memo = initial
-#   if typeof iteratee == "string"
-#     while i < len
-#       memo = memo[iteratee](this[i])
-#       i++
-#   else if typeof iteratee == "function"
-#     while i < len
-#       memo = iteratee(memo, this[i])
-#       i++
-#   return memo
+Array::_reduce = (initial, iteratee) ->
+  if !iteratee
+    iteratee = initial
+    initial = undefined
+  i = 0; len = this.length
+  if typeof initial == "undefined"
+    memo = this[i]
+    i++
+  else
+    memo = initial
+  if typeof iteratee == "string"
+    while i < len
+      memo = memo[iteratee](this[i])
+      i++
+  else if typeof iteratee == "function"
+    while i < len
+      memo = iteratee(memo, this[i])
+      i++
+  return memo
 
-# Array::inject = Array::reduce
+Array::inject = Array::_reduce
 
 Array::reject = (iteratee) ->
   collection = []
@@ -121,3 +121,6 @@ Array::withoutFirst = (n) ->
   if typeof n == "undefined"
     n = 1
   this.slice(n, this.length)
+
+Array::copy = () ->
+  this.slice()

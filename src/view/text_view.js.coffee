@@ -1,1 +1,1 @@
-class CB.TextView extends CB.View
+class CB.TextView extends CB.ScrollView

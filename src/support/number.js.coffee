@@ -1,0 +1,2 @@
+Number::copy = ->
+  return this

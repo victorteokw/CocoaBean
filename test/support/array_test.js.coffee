@@ -84,7 +84,7 @@ describe "Array core extension:", ->
       it "should return length of array", ->
         a = [1, 2, 3]
         expect(a[countMethod]()).toEqual(3)
-  for reduceMethod in ["reduce", "inject"]
+  for reduceMethod in ["_reduce", "inject"]
     describe reduceMethod + ":", ->
       a = [10, 1, 2, 3]
       result = a[reduceMethod] (memo, number) => memo - number
@@ -198,3 +198,20 @@ describe "Array core extension:", ->
   describe "min", ->
     it "pending", ->
       pending("to be implemented")
+  describe "copy:", ->
+    a = null; b = null
+    beforeEach ->
+      a = [1, 2, 3, 4, 5]
+      b = a.copy()
+    it "copied array has the same structure", ->
+      expect(b).toEqual([1, 2, 3, 4, 5])
+    it "won't mutate the original one", ->
+      expect(a).toEqual([1, 2, 3, 4, 5])
+    it "mutate copied one won't affect original one", ->
+      b.push(6)
+      expect(b).toEqual([1, 2, 3, 4, 5, 6])
+      expect(a).toEqual([1, 2, 3, 4, 5])
+    it "mutate original one won't affect copied one", ->
+      a.push(6)
+      expect(a).toEqual([1, 2, 3, 4, 5, 6])
+      expect(b).toEqual([1, 2, 3, 4, 5])

@@ -2,10 +2,13 @@
 #= require support/dispatch
 #= require support/log
 #= require support/accessor
+#= require support/number
 #= require support/string
 #= require support/array
 #= require support/object
 #= require model/argument_error
+#= require model/browser
+#= require model/device
 #= require view/point
 #= require view/size
 #= require view/rect

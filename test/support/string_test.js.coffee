@@ -10,3 +10,20 @@ describe "String core extension:", ->
     it "just capitalize first char if length is 1", ->
       a = "a"
       expect(a.capitalize()).toBe("A")
+  describe "copy:", ->
+    a = null; b = null
+    beforeEach ->
+      a = "Abcde"
+      b = a.copy()
+    it "copied string has the same structure", ->
+      expect(b).toEqual("Abcde")
+    it "won't mutate the original one", ->
+      expect(a).toEqual("Abcde")
+    it "mutate copied one won't affect original one", ->
+      b += "a"
+      expect(a).toEqual("Abcde")
+      expect(b).toEqual("Abcdea")
+    it "mutate original one won't affect copied one", ->
+      a += "a"
+      expect(b).toEqual("Abcde")
+      expect(a).toEqual("Abcdea")
