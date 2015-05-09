@@ -27,6 +27,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'sprockets-es6', '~> 0.6'
   s.add_runtime_dependency 'jasmine', '~> 2.3'
   s.add_runtime_dependency 'uglifier', '~> 2.7'
+  s.add_runtime_dependency 'fastimage', '~> 1.6.8'
 
   s.add_development_dependency 'bundler', '~> 1.9'
   s.add_development_dependency 'rake', '~> 10.4'

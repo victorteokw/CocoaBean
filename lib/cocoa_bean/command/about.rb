@@ -49,7 +49,7 @@ module CocoaBean
             random_color_put "  Platform specific code location: #{bold(p.code_location)}\n"
           end
         rescue CocoaBean::Application::ApplicationCountError => e
-          warning_and_exit("You should only declare one cocoa bean application.")
+          UserInterface.exit("You should only declare one cocoa bean application.")
         end
       end
     end

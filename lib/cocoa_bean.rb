@@ -7,4 +7,5 @@ module CocoaBean
   autoload :Generator, 'cocoa_bean/generator'
   autoload :Task, 'cocoa_bean/task'
   autoload :Preferences, 'cocoa_bean/preferences'
+  autoload :UserInterface, 'cocoa_bean/user_interface'
 end

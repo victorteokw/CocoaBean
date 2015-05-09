@@ -143,7 +143,7 @@ class CB.View extends CB.Responder
   @property "alpha",
     set: (newAlpha) ->
       @_alpha = newAlpha
-      @css("opacity", newAlpha)
+      @layer.css("opacity", newAlpha)
 
   @property "backgroundColor",
     set: (newColor) ->
@@ -157,9 +157,9 @@ class CB.View extends CB.Responder
   @property "hidden",
     set: (newValue) ->
       if newValue == true
-        @css("visibility", "hidden")
+        @layer.css("visibility", "hidden")
       else if newValue == false
-        @css("visibility", "visible")
+        @layer.css("visibility", "visible")
       @_hidden = newValue
 
   @property "opaque" # Make sence on native platform
@@ -167,9 +167,9 @@ class CB.View extends CB.Responder
   @property "clipsToBounds",
     set: (newValue) ->
       if newValue == true
-        @css("overflow", "hidden")
+        @layer.css("overflow", "hidden")
       else if newValue == false
-        @css("overflow", "visible")
+        @layer.css("overflow", "visible")
       @_clipsToBounds = newValue
 
   @property "cornerRadius",

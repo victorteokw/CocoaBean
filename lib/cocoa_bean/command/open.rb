@@ -27,7 +27,7 @@ This commmand open the editor specified by 'Beanfile'.
       def run
         begin
           if @editor.nil? || @editor == ''
-            warning_and_exit("You haven't set your favorite editor.")
+            UserInterface.exit("You haven't set your favorite editor.")
           end
           if @root
             system "#{@editor} #{beanfile_directory}"
@@ -35,7 +35,7 @@ This commmand open the editor specified by 'Beanfile'.
             system "#{@editor} #{Dir.pwd}"
           end
         rescue CocoaBean::Application::ApplicationCountError => e
-          warning_and_exit("You should only declare one cocoa bean application in the Beanfile.")
+          UserInterface.exit("You should only declare one cocoa bean application in the Beanfile.")
         end
       end
 

@@ -35,9 +35,5 @@ module CocoaBean
 
     attr_accessor :destination
 
-    def warning_and_exit(message)
-      puts ('[!] ' + message).red
-      exit 1
-    end
   end
 end

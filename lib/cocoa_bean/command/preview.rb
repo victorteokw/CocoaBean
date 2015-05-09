@@ -18,11 +18,11 @@ module CocoaBean
       end
 
       def run
-        temp = @app.full_path(@app.temporary_directory)
+        temp = File.expand_path("web", @app.full_path(@app.temporary_directory))
         app_source = @app.full_path(@app.code_location)
         web_source = @app.full_path(@app.get_platform(@platform).code_location)
         ass_source = @app.full_path(@app.assets_location)
-        CocoaBean::Task.invoke("prev:#@platform:all",
+        CocoaBean::Task.invoke("preview:#@platform:all",
                                temp,
                                app_source,
                                web_source,

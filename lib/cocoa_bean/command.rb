@@ -56,31 +56,38 @@ DESC
     attr_accessor :app
     attr_accessor :platform
 
+    def self.options
+      [
+        ['--more', 'Verbose output']
+      ].concat(super)
+    end
+
     def run
       help!
     end
 
     def validate!
       if self.class.beanfile_required?
-        warning_and_exit 'You should run this command inside a cocoa bean application directory.' unless beanfile_location
+        UserInterface.exit 'You should run this command inside a cocoa bean application directory.' unless beanfile_location
       end
       if self.class.validate_platform?
-        warning_and_exit 'Provide a platform is required.' unless @platform
-        warning_and_exit 'Platform is not supported by this app.' unless @app.supported_platforms.include? @platform
+        UserInterface.exit 'Provide a platform is required.' unless @platform
+        UserInterface.exit 'Platform is not supported by this app.' unless @app.supported_platforms.include? @platform
       end
-    end
-
-    def warning_and_exit(message)
-      puts ('[!] ' + message).red
-      exit 1
     end
 
     def initialize(argv)
       super
       if self.class.beanfile_required?
-        load beanfile_location
-        @app = CocoaBean::Application.only_app
-        @app.root_directory = beanfile_directory
+        if beanfile_location
+          load beanfile_location
+          @app = CocoaBean::Application.only_app
+          @app.root_directory = beanfile_directory
+        end
+      end
+      unless argv.flag?('more')
+        require 'rake'
+        Rake::FileUtilsExt.verbose_flag = false
       end
     end
 

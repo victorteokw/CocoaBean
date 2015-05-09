@@ -91,7 +91,7 @@ module CocoaBean
       File.write(to, renderer.result(binding))
       output_create_file(to)
     rescue FileExistError => e
-      warning_and_exit("File #{to} exists! Cannot generate new application.")
+      UserInterface.exit("File #{to} exists! Cannot generate new application.")
     end
 
     def copy_file(from, to)
@@ -99,7 +99,7 @@ module CocoaBean
       FileUtils::cp(from, to)
       output_create_file(to)
     rescue FileExistError => e
-      warning_and_exit("File #{to} exists! Cannot generate new application.")
+      UserInterface.exit("File #{to} exists! Cannot generate new application.")
     end
 
     def create_directory(dir_path)
@@ -107,7 +107,7 @@ module CocoaBean
       FileUtils::mkdir_p(dir_path)
       output_create_file(dir_path)
     rescue DirectoryExistError => e
-      warning_and_exit("Directory #{dir_path} exists! Cannot generate new application.")
+      UserInterface.exit("Directory #{dir_path} exists! Cannot generate new application.")
     end
 
     def output_create_file(file_or_dir)

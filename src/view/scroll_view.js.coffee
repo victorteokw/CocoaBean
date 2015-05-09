@@ -4,7 +4,7 @@ class CB.ScrollView extends CB.View
 
   constructor: (frame) ->
     super(frame)
-    @css("overflow", "scroll")
+    @layer.css("overflow", "scroll")
     @_scrollEnabled = true
     @_contentSize = new CB.Size(0, 0)
 
@@ -40,9 +40,9 @@ class CB.ScrollView extends CB.View
     set: (newValue) ->
       @_scrollEnabled = newValue
       if newValue == false
-        @css("overflow", "hidden")
+        @layer.css("overflow", "hidden")
       else
-        @css("overflow", "scroll")
+        @layer.css("overflow", "scroll")
 
   @property "directionalLockEnabled"
 
@@ -69,3 +69,6 @@ class CB.ScrollView extends CB.View
   @property "scrollIndicatorInsets"
 
   flashScrollIndicators: () ->
+
+  css: (args...) ->
+    @contentLayer.css(args...)

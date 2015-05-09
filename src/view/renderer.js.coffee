@@ -190,6 +190,7 @@ class CB.Renderer
       view._contentLayer.css("-moz-user-select", "-moz-none")
       view._contentLayer.css("-ms-user-select", "none")
       view._contentLayer.css("user-select", "none")
+      view._contentLayer.css("overflow", "hidden")
       view._layer.append(view._contentLayer)
     else
       view._layer = view.layerDescription()
@@ -230,7 +231,14 @@ class CB.Renderer
   viewWillRemoveFromSuperview: (view) ->
     view.layer.remove()
 
+  syncSubviewLayerRelationship: (view) ->
+    unless view.layer.data("view")
+      view.layer.data("view", view)
+    for v in view.subviews
+      this.syncSubviewLayerRelationship(v)
+
   viewDidAddSubviewAtIndex: (superview, subview, index) ->
+    this.syncSubviewLayerRelationship(subview)
     layerToAddTo = if superview instanceof CB.ScrollView
                      superview.contentLayer
                    else
@@ -249,6 +257,7 @@ class CB.Renderer
     view.layer.css("top", view.frame.origin.y)
     view.layer.width(view.frame.size.width)
     view.layer.height(view.frame.size.height)
+    # if (view._subviews && view._subviews.length > 0) || (view instanceof CB.ScrollView)
     if view._subviews && view._subviews.length > 0
       view.layoutSubviews()
 
