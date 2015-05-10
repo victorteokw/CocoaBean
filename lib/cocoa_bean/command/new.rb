@@ -2,8 +2,6 @@ module CocoaBean
   class Command
     class New < Command
 
-      require 'cocoa_bean/generator/template_generator'
-
       self.summary = 'Generate a cocoa bean project'
       self.description = <<-DESC
 This command generates a cocoa bean project.
@@ -44,32 +42,18 @@ This command generates a cocoa bean project.
 
       def run
         absolute_app_path = File.expand_path(@app_path, Dir.pwd)
-        generate_main_project(absolute_app_path)
-        if true
-          generate_web_project(absolute_app_path)
+        CocoaBean::Task.invoke("gen:proj:base:all",
+                               @lang,
+                               absolute_app_path)
+        if @web
+          web_path = File.expand_path("web", absolute_app_path)
+          CocoaBean::Task.invoke("gen:proj:web:all",
+                                 web_path,
+                                 absolute_app_path)
         end
-        if true
-          generate_cocoa_project(absolute_app_path)
-          generate_ios_target(absolute_app_path)
-          generate_osx_target(absolute_app_path)
-        end
       end
 
-      def generate_main_project(app_path)
-        generator = CocoaBean::TemplateGenerator.new
-        generator.template = @lang
-        generator.destination = app_path
-#        generator.app_name = File.basename(app_path)
-        generator.generate
-      end
-
-      def generate_web_project(app_path)
-        generator = CocoaBean::TemplateGenerator.new
-        generator.template = "web"
-        generator.destination = app_path
-        generator.generate
-      end
-
+      # TODO: remove
       def generate_cocoa_project(app_path)
         file_generator = CocoaBean::TemplateGenerator.new
         file_generator.template = "cocoa"
@@ -83,11 +67,6 @@ This command generates a cocoa bean project.
 
       end
 
-      def generate_ios_target(app_path)
-      end
-
-      def generate_osx_target(app_path)
-      end
     end
   end
 end

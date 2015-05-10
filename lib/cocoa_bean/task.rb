@@ -10,6 +10,7 @@ module CocoaBean
   class Task
     require 'cocoa_bean/task/dist'
     require 'cocoa_bean/task/genapp'
+    require 'cocoa_bean/task/genproj'
     require 'cocoa_bean/task/preview'
     require 'cocoa_bean/task/test'
 
