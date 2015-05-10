@@ -1,0 +1,44 @@
+class <%= @module_name %>.HelloView extends CB.View {
+
+    constructor(frame) {
+        super(frame);
+
+        var beanImage = new CB.Image("logo");
+        this.beanView = new CB.ImageView();
+        this.beanView.image = beanImage;
+        this.addSubview(this.beanView)
+
+        this.greetingView = new CB.LabelView();
+        this.greetingView.text = "Hello, World!";
+        this.greetingView.font = "Helvetica";
+        this.greetingView.fontSize = 30;
+        this.greetingView.textColor = "gray";
+        this.greetingView.textAlignment = "center";
+        this.addSubview(this.greetingView)
+
+        this.linkView = new CB.TextButton();
+        this.linkView.labelView.text = "Documentation";
+        this.linkView.labelView.font = "Helvetica";
+        this.linkView.labelView.textColor = "purple";
+        this.addSubview(this.linkView);
+    }
+
+    layoutSubviews() {
+        super();
+
+        beanViewSize = this.beanView.sizeThatFits();
+        this.beanView.bounds = new CB.Rect(0, 0, beanViewSize.width, beanViewSize.height);
+        this.beanView.center = this.superview.convertPointToView(this.center, this);
+
+        greetingViewSize = this.greetingView.sizeThatFits();
+        greetingViewTop = this.beanView.frame.y + this.beanView.frame.height + 40;
+        this.greetingView.frame =
+            new CB.Rect(0, greetingViewTop, this.frame.width, greetingViewSize.height);
+
+        linkViewSize = this.linkView.sizeThatFits();
+        linkViewLeft = this.frame.width - linkViewSize.width - 20;
+        this.linkView.frame =
+            new CB.Rect(linkViewLeft, 20, linkViewSize.width, linkViewSize.height);
+    }
+
+}

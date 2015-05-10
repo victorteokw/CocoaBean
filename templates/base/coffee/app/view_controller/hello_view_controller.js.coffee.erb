@@ -1,0 +1,13 @@
+class <%= @module_name %>.HelloViewController extends CB.ViewController
+  constructor: () ->
+    super
+
+  loadView: () ->
+    @_view = new <%= @module_name %>.HelloView
+
+  viewDidLoad: () ->
+    for eventType in ["mouse.up.inside", "touch.up.inside"]
+      @view.linkView.addTargetActionForControlEvents(this, "linkClicked", eventType)
+
+  linkClicked: (sender, event) ->
+    alert("Should go to CocoaBean website!")

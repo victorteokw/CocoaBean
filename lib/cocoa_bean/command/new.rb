@@ -45,6 +45,8 @@ This command generates a cocoa bean project.
         CocoaBean::Task.invoke("gen:proj:base:all",
                                @lang,
                                absolute_app_path)
+        CocoaBean::Task.invoke("gen:proj:assets:all",
+                               absolute_app_path)
         if @web
           web_path = File.expand_path("web", absolute_app_path)
           CocoaBean::Task.invoke("gen:proj:web:all",

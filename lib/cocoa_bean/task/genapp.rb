@@ -1,7 +1,9 @@
 def build_js(from_dir, build_file_name, to_dir, target_file_name)
   require 'sprockets'
+  require 'sprockets/es6'
   target = File.expand_path(target_file_name, to_dir)
   environment = Sprockets::Environment.new
+  environment.register_engine('.es6', Sprockets::ES6)
   environment.append_path(from_dir)
   js = environment[build_file_name].to_s
   File.write(target, js)
@@ -76,7 +78,7 @@ namespace "gen" do
           require 'open-uri'
           content = open("http://code.jquery.com/jquery-2.1.3.js").read
           File.open(jquery_location, 'w') {|f| f.write(content)}
-          UI.happy("#{jquery_location} downloaded")
+          UI.happy("jquery-2.1.3.js downloaded")
         end.invoke
       end
 

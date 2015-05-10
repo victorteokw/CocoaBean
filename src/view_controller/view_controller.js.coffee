@@ -4,7 +4,7 @@
 #   class MyController extends CB.ViewController
 #     constructor: () ->
 #     loadView: () ->
-#       @view = new YourOwnView()
+#       @_view = new YourOwnView()
 #
 # @example To load a controller into window:
 #   $(document).ready ->

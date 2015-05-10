@@ -1,6 +1,5 @@
 class <%= @module_name %>.ApplicationDelegate extends CB.ApplicationDelegate
   applicationDidFinishLaunchingWithOptions: (options) ->
-    CB.Log('App launch fine!')
-    controller = new <%= @module_name %>.SampleViewController()
+    controller = new <%= @module_name %>.HelloViewController()
     CB.Window.currentWindow().rootViewController = controller
     return

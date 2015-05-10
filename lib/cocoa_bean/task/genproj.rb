@@ -109,6 +109,29 @@ namespace "gen" do
       end
     end
 
+    namespace "assets" do
+      task "all", :dest_app_dir do |t, args|
+        dest = args[:dest_app_dir]
+        dest_ass_dir = File.expand_path('assets', dest)
+
+        directory dest_ass_dir do |t|
+          UI.happy "#{dest_ass_dir} directory created"
+        end.invoke
+
+        assets_from = File.expand_path('../../../../templates/assets', __FILE__)
+
+        sources = Dir.glob File.expand_path('*', assets_from)
+        sources.reject! {|f| [".", "..", ".DS_Store"].include? File.basename(f) }
+        sources.each do |f|
+          target = f.gsub(assets_from, dest_ass_dir).gsub('.erb', '')
+          file target => f do
+            FileUtils::cp(f, target)
+            UI.happy "#{target} created"
+          end.invoke
+        end
+      end
+    end
+
     namespace "ios" do
     end
 

@@ -1,0 +1,40 @@
+class <%= @module_name %>.HelloView extends CB.View
+
+  constructor: (frame) ->
+    super(frame)
+
+    beanImage = new CB.Image("logo")
+    @beanView = new CB.ImageView
+    @beanView.image = beanImage
+    this.addSubview(@beanView)
+
+    @greetingView = new CB.LabelView
+    @greetingView.text = "Hello, World!"
+    @greetingView.font = "Helvetica"
+    @greetingView.fontSize = 30
+    @greetingView.textColor = "gray"
+    @greetingView.textAlignment = "center"
+    this.addSubview(@greetingView)
+
+    @linkView = new CB.TextButton
+    @linkView.labelView.text = "Documentation"
+    @linkView.labelView.font = "Helvetica"
+    @linkView.labelView.textColor = "purple"
+    this.addSubview(@linkView)
+
+  layoutSubviews: () ->
+    super
+
+    beanViewSize = @beanView.sizeThatFits()
+    @beanView.bounds = new CB.Rect(0, 0, beanViewSize.width, beanViewSize.height)
+    @beanView.center = @superview.convertPointToView(@center, this)
+
+    greetingViewSize = @greetingView.sizeThatFits()
+    greetingViewTop = @beanView.frame.y + @beanView.frame.height + 40
+    @greetingView.frame =
+      new CB.Rect(0, greetingViewTop, @frame.width, greetingViewSize.height)
+
+    linkViewSize = @linkView.sizeThatFits()
+    linkViewLeft = @frame.width - linkViewSize.width - 20
+    @linkView.frame =
+      new CB.Rect(linkViewLeft, 20, linkViewSize.width, linkViewSize.height)
