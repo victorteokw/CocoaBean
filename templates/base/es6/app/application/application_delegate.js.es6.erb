@@ -1,5 +1,5 @@
-class <%= @module_name %>.ApplicationDelegate extends CB.ApplicationDelegate {
-  applicationDidFinishLaunchingWithOptions: function(options) {
+<%= @module_name %>.ApplicationDelegate = class extends CB.ApplicationDelegate {
+  applicationDidFinishLaunchingWithOptions(options) {
     var controller = new <%= @module_name %>.HelloViewController();
     CB.Window.currentWindow().rootViewController = controller;
   }

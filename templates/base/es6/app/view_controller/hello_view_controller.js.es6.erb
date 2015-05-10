@@ -1,4 +1,4 @@
-class <%= @module_name %>.HelloViewController extends CB.ViewController {
+<%= @module_name %>.HelloViewController = class extends CB.ViewController {
     constructor() {
         super();
     }
@@ -8,6 +8,7 @@ class <%= @module_name %>.HelloViewController extends CB.ViewController {
     }
 
     viewDidLoad() {
+        super.viewDidLoad();
         ["mouse.up.inside", "touch.up.inside"].each(eventType => {
             this.view.linkView.addTargetActionForControlEvents(this, "linkClicked", eventType);
         });

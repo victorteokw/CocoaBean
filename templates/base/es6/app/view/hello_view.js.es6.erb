@@ -1,4 +1,4 @@
-class <%= @module_name %>.HelloView extends CB.View {
+<%= @module_name %>.HelloView = class extends CB.View {
 
     constructor(frame) {
         super(frame);
@@ -24,19 +24,19 @@ class <%= @module_name %>.HelloView extends CB.View {
     }
 
     layoutSubviews() {
-        super();
+        super.layoutSubviews();
 
-        beanViewSize = this.beanView.sizeThatFits();
+        var beanViewSize = this.beanView.sizeThatFits();
         this.beanView.bounds = new CB.Rect(0, 0, beanViewSize.width, beanViewSize.height);
         this.beanView.center = this.superview.convertPointToView(this.center, this);
 
-        greetingViewSize = this.greetingView.sizeThatFits();
-        greetingViewTop = this.beanView.frame.y + this.beanView.frame.height + 40;
+        var greetingViewSize = this.greetingView.sizeThatFits();
+        var greetingViewTop = this.beanView.frame.y + this.beanView.frame.height + 40;
         this.greetingView.frame =
             new CB.Rect(0, greetingViewTop, this.frame.width, greetingViewSize.height);
 
-        linkViewSize = this.linkView.sizeThatFits();
-        linkViewLeft = this.frame.width - linkViewSize.width - 20;
+        var linkViewSize = this.linkView.sizeThatFits();
+        var linkViewLeft = this.frame.width - linkViewSize.width - 20;
         this.linkView.frame =
             new CB.Rect(linkViewLeft, 20, linkViewSize.width, linkViewSize.height);
     }
