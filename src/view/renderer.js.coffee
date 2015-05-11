@@ -179,28 +179,25 @@ class CB.Renderer
 
   # pragma mark - Interacting with view
 
+  normalizeLayer: (layer) ->
+    layer.css("position", "absolute")
+    layer.css("-webkit-touch-callout", "none")
+    layer.css("-moz-user-select", "-moz-none")
+    layer.css("-ms-user-select", "none")
+    layer.css("user-select", "none")
+    layer.css("overflow", "hidden")
+
   loadLayerForView: (view) ->
     return if view._layer
     if view instanceof CB.ScrollView
       view._layer = $("<div></div>")
       view._contentLayer = $("<div></div>")
-      view._contentLayer.css("position", "absolute")
-      view._contentLayer.css("-webkit-touch-callout", "none")
-      view._contentLayer.css("-webkit-user-select", "none")
-      view._contentLayer.css("-moz-user-select", "-moz-none")
-      view._contentLayer.css("-ms-user-select", "none")
-      view._contentLayer.css("user-select", "none")
-      view._contentLayer.css("overflow", "hidden")
+      this.normalizeLayer(view._contentLayer)
       view._layer.append(view._contentLayer)
     else
       view._layer = view.layerDescription()
     view._layer.data("view", view)
-    view._layer.css("position", "absolute")
-    view._layer.css("-webkit-touch-callout", "none")
-    view._layer.css("-webkit-user-select", "none")
-    view._layer.css("-moz-user-select", "-moz-none")
-    view._layer.css("-ms-user-select", "none")
-    view._layer.css("user-select", "none")
+    this.normalizeLayer(view._layer)
     return
 
   viewForLayer: (layer) ->

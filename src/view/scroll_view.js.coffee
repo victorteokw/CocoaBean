@@ -43,6 +43,7 @@ class CB.ScrollView extends CB.View
         @layer.css("overflow", "hidden")
       else
         @layer.css("overflow", "scroll")
+        @layer.css("-webkit-overflow-scrolling", "touch")
 
   @property "directionalLockEnabled"
 

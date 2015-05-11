@@ -127,6 +127,7 @@ namespace "gen" do
         dest = args[:dest]
 
         require 'fastimage'
+        require 'json'
 
         if File.directory? source
           metadata_target = File.expand_path('imagedata.js', dest)

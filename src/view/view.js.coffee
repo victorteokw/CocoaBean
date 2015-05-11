@@ -21,6 +21,7 @@ class CB.View extends CB.Responder
     @clipsToBounds = true
     @_cornerRadius = 0
     @_window = null
+    @_contentMode = "scale to fill"
 
   # pragma mark - Render
 
@@ -106,8 +107,8 @@ class CB.View extends CB.Responder
   # Rect in the view coordinate of super view.
   #
   @property "frame",
-    set: (newValue) ->
-      @_frame = newValue
+    set: (newFrame) ->
+      @_frame = newFrame
       @renderDelegate.applyFrameForView(this)
       return
 
@@ -279,3 +280,21 @@ class CB.View extends CB.Responder
       else return this
     else
       return null
+
+  # Available values are
+  #
+  # scale to fill
+  # scale aspect fit
+  # scale aspect fill
+  # redraw
+  # center
+  # top
+  # bottom
+  # left
+  # right
+  # top left
+  # top right
+  # bottom left
+  # bottom right
+  #
+  @property "contentMode"

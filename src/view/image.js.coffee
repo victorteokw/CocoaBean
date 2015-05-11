@@ -1,13 +1,15 @@
 class CB.Image
-  constructor: (nameOrUrl) ->
+  constructor: (nameOrUrl, resizingMode) ->
     if !nameOrUrl
       throw CB.ArgumentError("Expect argument 1 to be String")
     if nameOrUrl.match(/https?:\/\//)
       @_url = nameOrUrl
       @_path = nameOrUrl
+      @_scale = 1
     else
       @_name = nameOrUrl
       this.__imageMetadataQuery(@_name)
+    @_resizingMode = resizingMode || "stretch"
 
   @property "readonly", "name"
 
@@ -16,6 +18,12 @@ class CB.Image
   @property "readonly", "url"
 
   @property "readonly", "path"
+
+  @property "readonly", "scale"
+
+  # 'tile' or 'stretch'
+  # default value is 'stretch'
+  @property  "resizingMode"
 
   __imageMetadataQuery: (name) ->
     imageMetadata = CB.__ImageMetadata
@@ -41,6 +49,7 @@ class CB.Image
     pixelRatios = [pixelRatio].concat(theOthers)
     for r in pixelRatios
       if data["@" + r + "x"]
+        @_scale = r
         if r == 1
           @_path = "assets/" + pureName + "." + extensionName
         else

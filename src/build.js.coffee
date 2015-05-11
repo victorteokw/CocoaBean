@@ -1,12 +1,14 @@
 #= require header
+#= require support/accessor
 #= require support/dispatch
 #= require support/log
-#= require support/accessor
 #= require support/number
 #= require support/string
 #= require support/array
 #= require support/object
 #= require model/argument_error
+#= require model/range
+#= require model/attributed_string
 #= require model/browser
 #= require model/device
 #= require view/point

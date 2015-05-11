@@ -1,0 +1,1 @@
+class CB.Range
