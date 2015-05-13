@@ -38,6 +38,7 @@ class CB.Window extends CB.View
       new CB.Rect(0, 0, window.innerWidth, window.innerHeight)
 
   layoutSubviews: () ->
+    return unless @_rootView
     @_rootView.frame = new CB.Rect(0, 0, @frame.width, @frame.height)
 
   layerDescription: () ->

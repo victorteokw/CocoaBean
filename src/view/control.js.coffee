@@ -165,7 +165,7 @@ class CB.Control extends CB.View
     unless this.beginTrackingWithEvent(event)
       @_tracking = false
 
-  mouseMovedWithEvent: (event) ->
+  mouseDraggedWithEvent: (event) ->
     if @_tracking
       this.setTouchOrPointInsideForEvent(event)
       unless this.continueTrackingWithEvent(event)

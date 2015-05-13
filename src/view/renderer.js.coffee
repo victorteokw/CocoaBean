@@ -12,7 +12,8 @@ class CB.Renderer
     return @__shared
 
   constructor: () ->
-    # this.setupDOMBody()
+    CB.DispatchOnce "CB.Renderer.setRootViewController", =>
+      this.setup()
 
   @property "readonly", "currentRootView",
     get: ->
@@ -60,76 +61,82 @@ class CB.Renderer
   # pragma mark - event handling
 
   touchstart: (e) ->
+    view = this.__getEventViewFromEvent(e)
+    return unless view
+    responder = this.__findResponderForEventView(view)
+    return unless responder
+    event = this.__buildEvent(e, view, "touch.start")
+    responder.touchesBeganWithEvent(event)
+    CB.Responder.currentFirstResponder = responder
+    @lastEventDispatched = event
+    return
+
   touchmove: (e) ->
+    return unless CB.Responder.currentFirstResponder
+    view = this.__getEventViewFromEvent(e)
+    return unless view
+    event = this.__buildEvent(e, view, "touch.move", true)
+    CB.Responder.currentFirstResponder.touchesMovedWithEvent(event)
+    @lastEventDispatched = event
+    return
+
   touchend: (e) ->
+    return unless CB.Responder.currentFirstResponder
+    view = this.__getEventViewFromEvent(e)
+    return unless view
+    event = this.__buildEvent(e, view, "touch.end", true)
+    CB.Responder.currentFirstResponder.touchesEndedWithEvent(event)
+    @lastEventDispatched = null
+    CB.Responder.currentFirstResponder = null
+
   touchcancel: (e) ->
+    return unless CB.Responder.currentFirstResponder
+    view = this.__getEventViewFromEvent(e)
+    return unless view
+    event = this.__buildEvent(e, view "touch.end", true)
+    CB.Responder.currentFirstResponder.touchesEndedWithEvent(event)
+    @lastEventDispatched = null
+    CB.Responder.currentFirstResponder = null
 
   mousemove: (e) ->
+    # Handle drag
     view = this.__getEventViewFromEvent(e)
-    responder = view
-    return unless responder
-    while responder && !responder.canBecomeFirstResponder()
-      responder = responder.nextResponder()
-    if responder
-      if responder == CB.Responder.currentFirstResponder
-        event = new CB.Event
-        if @lastEventDispatched
-          event._previousLocationInWindow = @lastEventDispatched.locationInWindow
-        event._timestamp = new Date
-        event._locationInWindow = new CB.Point(e.clientX, e.clientY)
-        event._view = view
-        event._window = view.window
-        event._type = "mouse.move"
-        responder.mouseMovedWithEvent(event)
-      else
-        event = new CB.Event
-        if @lastEventDispatched
-          event._previousLocationInWindow = @lastEventDispatched.locationInWindow
-        event._timestamp = new Date
-        event._locationInWindow = new CB.Point(e.clientX, e.clientY)
-        event._view = view
-        event._window = view.window
-        event._type = "mouse.exit"
-        responder.mouseExitedWithEvent(event)
-        # @lastEventDispatched = null
-        # CB.Responder.currentFirstResponder = null
+    if @mouseDownOn
+      event = this.__buildEvent(e, view, "mouse.drag", true)
+      @mouseDownOn.mouseDraggedWithEvent(event)
+      @lastEventDispatched = event
+      true
+    else
+      # return unless view
+      # responder = this.__findResponderForEventView(view)
+      # return unless responder
+      # # Dispatch for old responder
+      # event = this.__buildEvent(e, view, "mouse.exit", true)
+      # # Dispatch for new responder
+      # event = this.__buildEvent(e, view, "mouse.enter", true)
+      # responder.mouseEnterWithEvent(event)
+      # @lastEventDispatched = event
 
   mousedown: (e) ->
     view = this.__getEventViewFromEvent(e)
-    responder = view
+    return unless view
+    responder = this.__findResponderForEventView(view)
     return unless responder
-    while responder && !responder.canBecomeFirstResponder()
-      responder = responder.nextResponder()
-    if responder
-      CB.Responder.currentFirstResponder = responder
-      event = new CB.Event
-      event._timestamp = new Date
-      event._locationInWindow = new CB.Point(e.clientX, e.clientY)
-      event._view = view
-      event._window = view.window
-      event._type = "mouse.down"
-      responder.mouseDownWithEvent(event)
-      @lastEventDispatched = event
+    event = this.__buildEvent(e, view, "mouse.down")
+    responder.mouseDownWithEvent(event)
+    CB.Responder.currentFirstResponder = responder
+    @mouseDownOn = responder
+    @lastEventDispatched = event
+    return
 
   mouseup: (e) ->
-    return unless CB.Responder.currentFirstResponder
+    return unless @mouseDownOn
     view = this.__getEventViewFromEvent(e)
-    responder = view
-    while responder && !responder.canBecomeFirstResponder()
-      responder = responder.nextResponder()
-    if responder
-      CB.Responder.currentFirstResponder == responder
-      event = new CB.Event
-      if @lastEventDispatched
-        event._previousLocationInWindow = @lastEventDispatched.locationInWindow
-      event._timestamp = new Date
-      event._locationInWindow = new CB.Point(e.clientX, e.clientY)
-      event._view = view
-      event._window = view.window
-      event._type = "mouse.up"
-      responder.mouseUpWithEvent(event)
-    CB.Responder.currentFirstResponder = null
+    event = this.__buildEvent(e, view, "mouse.up", true)
+    @mouseDownOn.mouseUpWithEvent(event)
+    return
     @lastEventDispatched = null
+    @mouseDownOn = null
 
   __getEventViewFromEvent: (e) ->
     layer = $(e.target)
@@ -140,6 +147,41 @@ class CB.Renderer
       view = layer.data("view")
     return view
 
+  __findResponderForEventView: (view) ->
+    responder = view
+    while responder && !responder.canBecomeFirstResponder()
+      responder = responder.nextResponder()
+    return responder
+
+  __buildEvent: (e, view, type, usePrevious) ->
+    event = new CB.Event
+    event._timestamp = new Date
+    if type.match /touch/
+      touches = []
+      for t in e.originalEvent.touches
+        touch = new CB.Touch
+        touch._timestamp = new Date
+        touch._locationInWindow = new CB.Point(t.clientX, t.clientY)
+        touch._view = view
+        touch._window = view.window
+        touches.push(touch)
+      event._allTouches = touches
+      if type.match /end/
+        touch = new CB.Touch
+        touch._timestamp = new Date
+        touch._locationInWindow = new CB.Point(e.originalEvent.pageX, e.originalEvent.pageY)
+        touch._view = view
+        touch._window = view.window
+        event._allTouches = [touch]
+    else
+      event._locationInWindow = new CB.Point(e.clientX, e.clientY)
+      event._view = view
+      event._window = view.window
+      if usePrevious && @lastEventDispatched
+        event._previousLocationInWindow = @lastEventDispatched.locationInWindow
+    event._type = type
+    return event
+
   # pragma mark - layout
 
   layoutEntireHirarchyForWindow: () ->
@@ -148,11 +190,13 @@ class CB.Renderer
   layoutEntireHirarchyForView: (view) ->
     if view.viewController
       view.viewController.viewWillLayoutSubviews()
+    view.__isLayoutSubviews = true
     view.layoutSubviews()
-    if view.viewController
-      view.viewController.viewDidLayoutSubviews()
     for subview in view.subviews
       this.layoutEntireHirarchyForView(subview)
+    view.__isLayoutSubviews = false
+    if view.viewController
+      view.viewController.viewDidLayoutSubviews()
 
   # pragma mark - Interacting with view controller
 
@@ -169,8 +213,6 @@ class CB.Renderer
   setRootViewController: (viewController) ->
     if @currentRootViewController
       @currentRootViewController.view.removeFromSuperview()
-    CB.DispatchOnce "CB.Renderer.setRootViewController", =>
-      this.setup()
     @currentRootViewController = viewController
     CB.Window.currentWindow().addSubview(@currentRootView)
     CB.Window.currentWindow()._rootView = @currentRootView
@@ -182,6 +224,7 @@ class CB.Renderer
   normalizeLayer: (layer) ->
     layer.css("position", "absolute")
     layer.css("-webkit-touch-callout", "none")
+    layer.css("-webkit-user-select", "none")
     layer.css("-moz-user-select", "-moz-none")
     layer.css("-ms-user-select", "none")
     layer.css("user-select", "none")
@@ -256,7 +299,7 @@ class CB.Renderer
     view.layer.height(view.frame.size.height)
     # if (view._subviews && view._subviews.length > 0) || (view instanceof CB.ScrollView)
     if view._subviews && view._subviews.length > 0
-      view.layoutSubviews()
+      this.layoutEntireHirarchyForView(view) unless view.__isLayoutSubviews
 
   viewNeedsLayout: (view) ->
     if view.window

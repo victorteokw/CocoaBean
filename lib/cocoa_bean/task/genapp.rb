@@ -1,10 +1,11 @@
-def build_js(from_dir, build_file_name, to_dir, target_file_name)
+def build_js(from_dir, build_file_name, to_dir, target_file_name, min = false)
   require 'sprockets'
   require 'sprockets/es6'
   target = File.expand_path(target_file_name, to_dir)
   environment = Sprockets::Environment.new
   environment.register_engine('.es6', Sprockets::ES6)
   environment.append_path(from_dir)
+  environment.js_compressor = :uglify if min
   js = environment[build_file_name].to_s
   File.write(target, js)
 end
@@ -14,17 +15,18 @@ namespace "gen" do
     namespace "web" do
 
       task "all",
-        :app_source, :web_source, :ass_source, :dest do |t, args|
+        :app_source, :web_source, :ass_source, :dest, :debug do |t, args|
         app_source = args[:app_source]
         web_source = args[:web_source]
         ass_source = args[:ass_source]
         dest = args[:dest]
+        debug = args[:debug]
 
         invoke "gen:app:web:create dest dir", dest
         invoke "gen:app:web:copy user plat spec code", web_source, dest
-        invoke "gen:app:web:gen user app js", app_source, dest
+        invoke "gen:app:web:gen user app js", app_source, dest, debug
         invoke "gen:app:web:dl jq", dest
-        invoke "gen:app:web:gen cb js", dest
+        invoke "gen:app:web:gen cb js", dest, debug
         invoke "gen:app:web:cp user assets", ass_source, dest
         invoke "gen:app:web:create image metadata", ass_source, dest
       end
@@ -57,14 +59,16 @@ namespace "gen" do
         end
       end
 
-      task "gen user app js", :source_dir, :dest do |t, args|
+      task "gen user app js", :source_dir, :dest, :debug do |t, args|
         source_dir = args[:source_dir]
         dest = args[:dest]
-
+        debug = args[:debug]
+        build_name = 'build.js'
+        min = debug ? false : true
         sources = Rake::FileList.new File.expand_path('**/*', source_dir)
         target = File.expand_path('application.js', dest)
         file target => sources do
-          build_js source_dir, 'build.js', dest, 'application.js'
+          build_js source_dir, build_name, dest, 'application.js', min
           UI.happy "application.js generated"
         end.invoke
       end
@@ -82,8 +86,12 @@ namespace "gen" do
         end.invoke
       end
 
-      task "gen cb js", :dest do |t, args|
+      task "gen cb js", :dest, :debug do |t, args|
         dest = args[:dest]
+        debug = args[:debug]
+
+        build_name = debug ? 'debug_build.js' : 'build.js'
+        min = debug ? false : true
 
         cb_path = File.expand_path('src', CocoaBean::Task.root_directory_of_cocoa_bean)
         sources = Rake::FileList.new(File.expand_path('**/*', cb_path))
@@ -91,7 +99,7 @@ namespace "gen" do
         target = File.expand_path(target_name, dest)
 
         file target => sources do
-          build_js(cb_path, 'build.js', dest, target_name)
+          build_js(cb_path, build_name, dest, target_name, min)
           UI.happy("#{target_name} generated")
         end.invoke
       end

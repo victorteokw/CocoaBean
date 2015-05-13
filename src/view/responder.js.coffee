@@ -62,13 +62,13 @@ class CB.Responder
 
   mouseDownWithEvent: (event) ->
 
-  mouseMovedWithEvent: (event) ->
+  mouseDraggedWithEvent: (event) ->
 
   mouseUpWithEvent: (event) ->
 
-  mouseDraggedWithEvent: (event) ->
-
   mouseEnteredWithEvent: (event) ->
+
+  mouseMovedWithEvent: (event) ->
 
   mouseExitedWithEvent: (event) ->
 

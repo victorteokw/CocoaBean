@@ -12,7 +12,7 @@ namespace "test" do
       web_dir = File.expand_path('web', temp_dir)
       test_dir = File.expand_path('test', temp_dir)
 
-      invoke "gen:app:web:all", app_source, web_source, ass_source, web_dir
+      invoke "gen:app:web:all", app_source, web_source, ass_source, web_dir, true
       invoke "test:web:create temp test directory", temp_dir
       invoke "test:web:generate plain javascript test files", test_source, temp_dir
       invoke "test:web:invoke test", temp_dir, use_browser, web_dir

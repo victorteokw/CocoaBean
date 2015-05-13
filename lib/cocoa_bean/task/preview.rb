@@ -7,7 +7,7 @@ namespace "preview" do
         web_source = args[:web_source]
         ass_source = args[:ass_source]
 
-        invoke "gen:app:web:all", app_source, web_source, ass_source, web_dir
+        invoke "gen:app:web:all", app_source, web_source, ass_source, web_dir, true
         invoke "preview:web:launch", web_dir
     end
 

@@ -8,7 +8,7 @@ class CB.Touch
   @property "readonly", "timestamp"
 
   locationInView: (view) ->
-    CB.Window.currentWindow.convertPointToView(@locationInWindow, view)
+    CB.Window.currentWindow().convertPointToView(@locationInWindow, view)
 
   previousLocationInView: (view) ->
-    CB.Window.currentWindow.convertPointToView(@previousLocationInWindow, view)
+    CB.Window.currentWindow().convertPointToView(@previousLocationInWindow, view)
