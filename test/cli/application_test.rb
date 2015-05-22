@@ -1,7 +1,7 @@
 # coding: utf-8
 require 'test_helper.rb'
 
-class ApplicationTest < Minitest::Test
+class ApplicationTest < CocoaBean::Test
   def setup
     @app = CocoaBean::Application.new do |app|
       app.name = '제빵왕 김탁구'
@@ -17,31 +17,31 @@ class ApplicationTest < Minitest::Test
     @second = nil
   end
 
-  def test_app_has_name
+  test "app has name" do
     assert_equal @app.name, '제빵왕 김탁구'
   end
 
-  def test_app_has_version
+  test "app has version" do
     assert_equal @app.version, '1.2'
   end
 
-  def test_app_has_editor
+  test "app has editor" do
     assert_equal @app.editor, 'emacs'
   end
 
-  def test_code_location_by_default_is_app
+  test "code location by default is app" do
     assert_equal @app.code_location, 'app'
   end
 
-  def test_assets_location_by_default_is_assets
+  test "assets location by default is assets" do
     assert_equal @app.assets_location, 'assets'
   end
 
-  def test_distribution_directory_by_default_is_dist
+  test "distribution directory by default is dist" do
     assert_equal @app.distribution_directory, 'dist'
   end
 
-  def test_platform_has_some_default_value
+  test "platform has some default value" do
     p = @app.get_platform(:web)
     assert_equal 'Web Browser', p.readable_name
     assert_equal true, p.supported
@@ -49,7 +49,7 @@ class ApplicationTest < Minitest::Test
     assert_equal 'dist/web', p.distribution_directory
   end
 
-  def test_to_s
+  test "to s" do
     s = @app.to_s
     assert_match "#{@app.version}", s
     assert_match "#{@app.name}", s
@@ -59,7 +59,7 @@ class ApplicationTest < Minitest::Test
     assert_match "#{@app.distribution_directory}", s
   end
 
-  def test_verify_platform_name
+  test "verify platform name" do
     assert_raises CocoaBean::Application::PlatformNameError do
       @app = CocoaBean::Application.new do |app|
         app.name = "Name"
@@ -69,18 +69,18 @@ class ApplicationTest < Minitest::Test
     end
   end
 
-  def test_all_application
+  test "all application" do
     all_apps = CocoaBean::Application.all
     assert_kind_of Array, all_apps, "CocoaBean::Application.all should return array"
     assert_includes all_apps, @app, "App should be in the instance list."
   end
 
-  def test_only_app_returns_if_only_one
+  test "only app returns if only one" do
     GC.start
     assert_equal @app, CocoaBean::Application.only_app
   end
 
-  def test_only_app_throws_if_not_only_one
+  test "only app throws if not only one" do
     @second = CocoaBean::Application.new do |app|
       app.name = "옥탑방 왕세자"
     end

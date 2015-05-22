@@ -1,4 +1,7 @@
 # CocoaBean
+
+![Logo](https://raw.githubusercontent.com/cheunghy/CocoaBean/master/logo.jpg)
+
 [![Build status](https://travis-ci.org/cheunghy/CocoaBean.svg?branch=master)](https://travis-ci.org/cheunghy/CocoaBean)
 
 CocoaBean is a multi-platform javaScript framework. It uses real OOP and MVC. It tries to mimic local app development just like Android and iOS. Currently, the api structure is nearly the same as Apple's Cocoa and Cocoa Touch framework. In the future, it may change or may not change. It depends. However and always, one native style code base can generate multiple apps with javaScript.
@@ -85,5 +88,6 @@ There are a lot of works should be done, just take it freely!
 
 You may join the discussion at anytime!
 
-## Screen shot of an CocoaBean application
+## an sample CocoaBean application
+[chess game](https://github.com/cheunghy/chess)
 ![Screen shot](https://raw.githubusercontent.com/cheunghy/CocoaBean/master/sshot.png)

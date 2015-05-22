@@ -7,10 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1B08CCD01AA593E40011AF44 /* accessor.js in Resources */ = {isa = PBXBuildFile; fileRef = 1B08CCCF1AA593E40011AF44 /* accessor.js */; };
-		1B08CCD11AA593E40011AF44 /* accessor.js in Resources */ = {isa = PBXBuildFile; fileRef = 1B08CCCF1AA593E40011AF44 /* accessor.js */; };
-		1B08CCD31AA5953B0011AF44 /* window.js in Resources */ = {isa = PBXBuildFile; fileRef = 1B08CCD21AA5953B0011AF44 /* window.js */; };
-		1B08CCD41AA5953B0011AF44 /* window.js in Resources */ = {isa = PBXBuildFile; fileRef = 1B08CCD21AA5953B0011AF44 /* window.js */; };
 		1B08CCDD1AA5B0420011AF44 /* CBEnvironment.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B08CCDB1AA5B0420011AF44 /* CBEnvironment.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		1B08CCDE1AA5B0420011AF44 /* CBEnvironment.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B08CCDB1AA5B0420011AF44 /* CBEnvironment.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		1B08CCDF1AA5B0420011AF44 /* CBEnvironment.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B08CCDC1AA5B0420011AF44 /* CBEnvironment.m */; };
@@ -54,8 +50,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1B08CCCF1AA593E40011AF44 /* accessor.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = accessor.js; path = Sources/accessor.js; sourceTree = "<group>"; };
-		1B08CCD21AA5953B0011AF44 /* window.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = window.js; sourceTree = "<group>"; };
 		1B08CCDB1AA5B0420011AF44 /* CBEnvironment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBEnvironment.h; sourceTree = "<group>"; };
 		1B08CCDC1AA5B0420011AF44 /* CBEnvironment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CBEnvironment.m; sourceTree = "<group>"; };
 		1B08CCE11AA5B2450011AF44 /* CBViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBViewController.h; sourceTree = "<group>"; };
@@ -109,8 +103,6 @@
 		1B68AEE51AA43BC200E773EC = {
 			isa = PBXGroup;
 			children = (
-				1B08CCCF1AA593E40011AF44 /* accessor.js */,
-				1B08CCD21AA5953B0011AF44 /* window.js */,
 				1B68AF2A1AA43E7A00E773EC /* Sources */,
 				1B68AEF11AA43BC200E773EC /* OS X */,
 				1B68AF111AA43C7300E773EC /* iOS */,
@@ -335,8 +327,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				1B68AF331AA43F9C00E773EC /* Info.plist in Resources */,
-				1B08CCD31AA5953B0011AF44 /* window.js in Resources */,
-				1B08CCD01AA593E40011AF44 /* accessor.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -344,8 +334,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1B08CCD41AA5953B0011AF44 /* window.js in Resources */,
-				1B08CCD11AA593E40011AF44 /* accessor.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -31,7 +31,7 @@
         this.beanView.center = this.superview.convertPointToView(this.center, this);
 
         var greetingViewSize = this.greetingView.sizeThatFits();
-        var greetingViewTop = this.beanView.frame.y + this.beanView.frame.height + 40;
+        var greetingViewTop = this.beanView.frame.y + this.beanView.frame.height + 10;
         this.greetingView.frame =
             new CB.Rect(0, greetingViewTop, this.frame.width, greetingViewSize.height);
 

@@ -57,6 +57,8 @@ class CB.LabelView extends CB.View
 
   @property "numberOfLines"
 
+  @property "maxWidth"
+
   layerDescription: () ->
     $("<div></div>")
 
@@ -70,6 +72,8 @@ class CB.LabelView extends CB.View
       @_sizeTestingLayer.css("visibility", "hidden")
       @_sizeTestingLayer.css("height", "auto")
       @_sizeTestingLayer.css("width", "auto")
+      if @maxWidth
+        @_sizeTestingLayer.css("max-width", @maxWidth)
       @_sizeTestingLayer.css("white-space", "nowrap")
     @_sizeTestingLayer.css("font-family", @font)
     @_sizeTestingLayer.css("font-size", @fontSize)

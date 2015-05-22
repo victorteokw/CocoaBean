@@ -30,7 +30,7 @@ class <%= @module_name %>.HelloView extends CB.View
     @beanView.center = @superview.convertPointToView(@center, this)
 
     greetingViewSize = @greetingView.sizeThatFits()
-    greetingViewTop = @beanView.frame.y + @beanView.frame.height + 40
+    greetingViewTop = @beanView.frame.y + @beanView.frame.height + 10
     @greetingView.frame =
       new CB.Rect(0, greetingViewTop, @frame.width, greetingViewSize.height)
 

@@ -1,6 +1,6 @@
 require 'test_helper.rb'
 
-class PlatformTest < Minitest::Test
+class PlatformTest < CocoaBean::Test
   def setup
     @platform = CocoaBean::Platform.new(:web)
   end
@@ -9,7 +9,7 @@ class PlatformTest < Minitest::Test
     @platform = nil
   end
 
-  def test_to_s
+  test "to_s method should behave correctly" do
     s = @platform.to_s
     assert_match "#{@platform.name}", s
     assert_match "#{@platform.readable_name}", s

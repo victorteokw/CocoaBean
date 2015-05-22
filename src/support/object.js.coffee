@@ -7,7 +7,9 @@ Object.property "readonly", "class",
 
 Object.property "readonly", "superclass",
   get: () ->
-    this.constructor.prototype.__proto__.constructor
+    if this.constructor.prototype.__proto__
+      return this.constructor.prototype.__proto__.constructor
+    return undefined
 
 Object::instanceOf = (cls) ->
   this instanceof cls
