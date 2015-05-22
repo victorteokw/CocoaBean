@@ -47,6 +47,10 @@ class CB.Application extends CB.Responder
   nextResponder: () ->
     null
 
+  openURL: (url) ->
+    window.open(url, '_blank')
+    return
+
 # The application delegate class.
 #
 class CB.ApplicationDelegate
