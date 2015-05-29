@@ -24,3 +24,28 @@ describe "Object core extension", ->
     it "returns false if obj doesn't has the method", ->
       a = new CB.View
       expect(a.respondsTo("slice")).toBe(false)
+
+  describe "copy", ->
+
+    # Sorry for my English ;)
+    it "returns a very similar object", ->
+      obj1 = key1: "value1", key2: "value2"
+      obj2 = obj1.copy()
+      expect(obj1).not.toBe obj2
+      expect(obj1).toEqual obj2
+
+    it "works for complex object, too", ->
+      obj1 = new CB.View
+      obj1.cornerRadius = 10.0
+      obj2 = obj1.copy()
+      expect(obj2.class).toBe CB.View
+      expect(obj2).not.toBe obj1
+      expect(obj2).toEqual obj1
+      expect(obj2.cornerRadius).toEqual 10
+
+      obj1 = new CB.View(new CB.Rect(1, 2, 3, 4))
+      obj2 = obj1.copy()
+      expect(obj2.class).toBe CB.View
+      expect(obj2).not.toBe obj1
+      expect(obj2).toEqual obj1
+      expect(obj2.frame).toEqual new CB.Rect(1, 2, 3, 4)

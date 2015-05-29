@@ -192,7 +192,11 @@ class CB.View extends CB.Responder
   sizeThatFits: (size) ->
     @frame.size
 
-  sizeToFit: () ->
+  # sizeToFit
+  # Note this behavior is different from Apple's UIKit
+  # which does not accept a argument
+  #
+  sizeToFit: (size) ->
     size = this.sizeThatFits(size)
     @frame = new CB.Rect(@frame.x, @frame.y, size.width, size.height)
 
@@ -221,6 +225,7 @@ class CB.View extends CB.Responder
     if this.superview
       ancestor = this.superview.ancestorSharedWithView(view)
       return ancestor if ancestor
+      return null
     else
       return this.ancestorSharedWithView(view.superview)
 

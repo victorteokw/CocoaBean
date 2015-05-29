@@ -12,7 +12,11 @@ String::capitalize = () ->
 String::lines = () ->
   this.split /\r?\n/ # preserve \n or not?
 
-# Actually, in javaScript string are immutable and seems always copied when assigns,
-# just provide an consistent api. It's easy for use when enumerating through an array.
+# Actually, in javaScript string are immutable and seems always copied
+# when assigns,
+# just provide an consistent api. It's easy for use when enumerating
+# through an array.
 String::copy = () ->
   return this
+
+String.provided Copyable

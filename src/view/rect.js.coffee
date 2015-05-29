@@ -19,3 +19,11 @@ class CB.Rect
 
   @property "readonly", "height",
     get: -> @size.height
+
+  equals: (rhs) ->
+    @origin.equals(rhs.origin) and @size.equals(rhs.size)
+
+  copy: ->
+    new CB.Rect(@x, @y, @width, @height)
+
+  @provided Equalable, Copyable

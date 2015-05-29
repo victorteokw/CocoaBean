@@ -7,3 +7,11 @@ class CB.Size
   @property "readonly", "width"
 
   @property "readonly", "height"
+
+  equals: (rhs) ->
+    @width == rhs.width and @height == rhs.height
+
+  copy: ->
+    new CB.Size(@width, @height)
+
+  @provided Equalable, Copyable

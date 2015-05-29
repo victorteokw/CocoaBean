@@ -15,8 +15,13 @@ Object::instanceOf = (cls) ->
   this instanceof cls
 
 Object::copy = () ->
-    # How to do this?
+  copy = new this.constructor()
+  for prop of this
+    if this.hasOwnProperty(prop)
+      copy[prop] = this[prop]
+  return copy
 
+# TODO: How to do this?
 Object::deepCopy = () ->
 
 Object::respondsTo = (methodName) ->
@@ -24,3 +29,5 @@ Object::respondsTo = (methodName) ->
   if typeof value == "function"
     return true
   else return false
+
+Object.provided Copyable

@@ -124,3 +124,5 @@ Array::withoutFirst = (n) ->
 
 Array::copy = () ->
   this.slice()
+
+Array.provided Copyable

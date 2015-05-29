@@ -1,30 +1,51 @@
 describe "CB.Rect", ->
-  aRect = null
-  beforeEach ->
-    aRect = new CB.Rect(10, 20, 30, 40)
+
+  beforeEach -> @rect = new CB.Rect(10, 20, 30, 40)
+
   it "constructs", ->
-    expect(aRect.origin.x).toBe(10)
-    expect(aRect.x).toBe(aRect.origin.x)
-    expect(aRect.origin.y).toBe(20)
-    expect(aRect.y).toBe(aRect.origin.y)
-    expect(aRect.size.width).toBe(30)
-    expect(aRect.width).toBe(aRect.size.width)
-    expect(aRect.size.height).toBe(40)
-    expect(aRect.height).toBe(aRect.size.height)
+    expect(@rect.origin.x).toBe(10)
+    expect(@rect.x).toBe(@rect.origin.x)
+    expect(@rect.origin.y).toBe(20)
+    expect(@rect.y).toBe(@rect.origin.y)
+    expect(@rect.size.width).toBe(30)
+    expect(@rect.width).toBe(@rect.size.width)
+    expect(@rect.size.height).toBe(40)
+    expect(@rect.height).toBe(@rect.size.height)
 
   it "can't set width", ->
-    expect(-> aRect.width = 19).toThrow()
-    expect(aRect.width).toBe(30)
+    expect(-> @rect.width = 19).toThrow()
+    expect(@rect.width).toBe(30)
+
   it "can't set height", ->
-    expect(-> aRect.height = 30).toThrow()
-    expect(aRect.height).toBe(40)
+    expect(-> @rect.height = 30).toThrow()
+    expect(@rect.height).toBe(40)
+
   it "can't set x", ->
-    expect(-> aRect.x = 30).toThrow()
-    expect(aRect.x).toBe(10)
+    expect(-> @rect.x = 30).toThrow()
+    expect(@rect.x).toBe(10)
+
   it "can't set y", ->
-    expect(-> aRect.y = 40).toThrow()
-    expect(aRect.y).toBe(20)
+    expect(-> @rect.y = 40).toThrow()
+    expect(@rect.y).toBe(20)
+
   it "can't set origin", ->
-    expect(-> aRect.origin = new CB.Point(1,2)).toThrow()
+    expect(-> @rect.origin = new CB.Point(1,2)).toThrow()
+
   it "can't set size", ->
-    expect(-> aRect.size = new CB.Size(1,2)).toThrow()
+    expect(-> @rect.size = new CB.Size(1,2)).toThrow()
+
+  it "copies", ->
+    newRect = @rect.copy()
+    expect(newRect).toEqual @rect
+
+  it "equals", ->
+    newRect = new CB.Rect(10, 20, 30, 40)
+    expect(newRect.equals(@rect)).toBe true
+    newRect = new CB.Rect(10, 20, 30, 41)
+    expect(newRect.equals(@rect)).toBe false
+
+  it "provided Equalable", ->
+    expect(CB.Rect.provides(Equalable)).toBe true
+
+  it "provided Copyable", ->
+    expect(CB.Rect.provides(Copyable)).toBe true

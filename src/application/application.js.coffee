@@ -3,6 +3,7 @@
 # To reference the application singleton, use CB.Application.sharedApplication
 #
 class CB.Application extends CB.Responder
+
   # Constructor of CB.Application
   # Don't create application instance yourself
   # Use CB.Application.sharedApplication instead
