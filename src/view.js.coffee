@@ -2,7 +2,6 @@
 #= require view/size
 #= require view/rect
 #= require view/color
-#= require view/metrics
 #= require view/image
 #= require view/touch
 #= require view/event
