@@ -1,332 +1,265 @@
 class CB.Color
-  @colorWithRGBA: (r, g, b, a) ->
-    new CB.Color(r: r, g: g, b: b, a: a)
-  @colorWithHSLA: (h, s, l, a) ->
-    new CB.Color(h: h, s: s, l: l, a: a)
-  @colorWithRGB: (r, g, b) ->
-    @colorWithRGBA(r, g, b)
-  @colorWithHSL: (h, s, l) ->
-    @colorWithHSLA(h, s, l)
-  @__rAbbr = /^#([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])$/ # like #18F
-  @__rHex = /^#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})$/ # like #6699BB
-  @__rS = '(?:\\+|-)?' # optional sign
-  @__rI = @__rS + '\\d+' # integer
-  @__rF = @__rS + '\\d*\\.\\d+' # float
-  @__rN = '(?:' + @__rI + ')|(?:' + @__rF + ')' # whatever number
-  @__rIC = '(' + @__rI + ')' # integer captured
-  @__rFC = '(' + @__rF + ')' # float captured
-  @__rNC = '(' + @__rN + ')'
-  @__rP = @__rN + '%' # percentage
-  @__rPC = @__rNC + '%' # percentage with captured number
-  @__rW = '\\s*?' # whitespace
-  @__rICS = @__rW + @__rIC + @__rW
-  @__rFCS = @__rW + @__rFC + @__rW
-  @__rNCS = @__rW + @__rNC + @__rW
-  @__rPCS = @__rW + @__rPC + @__rW
-  @__rRGBA = new RegExp('^rgba?\\(' + @__rNCS + ',' + @__rNCS + ',' + @__rNCS + ',?(?:' + @__rNCS + ')?\\);*$')
-  @__rHSLA = new RegExp('^hsla?\\(' + @__rNCS + ',' + @__rPCS + ',' + @__rPCS + ',?(?:' + @__rNCS + ')?\\);*$')
 
   constructor: (obj) ->
-    if obj instanceof CB.Color then return obj
-    if typeof obj == 'string'
-      this.__setStringValue(obj)
-    else if typeof obj == 'object'
-      this.__setObjectValue(obj)
+    @__obj = obj
+    @__type = this.__figureOutType(obj)
 
-  __setStringValue: (obj) ->
-    if matchData = obj.match(CB.Color.__rAbbr)
-      @r = matchData[1]; @g = matchData[2]; @b = matchData[3]; @type = 'abbr'
-    else if matchData = obj.match(CB.Color.__rHex)
-      @r = matchData[1]; @g = matchData[2]; @b = matchData[3]; @type = 'hex'
-    else if matchData = obj.match(CB.Color.__rRGBA)
-      @r = matchData[1]; @g = matchData[2]; @b = matchData[3]; @type = 'rgb'
-      @type += "a" if @a = matchData[4]
-    else if matchData = obj.match(CB.Color.__rHSLA)
-      @h = matchData[1]; @s = matchData[2]; @l = matchData[3]; @type = 'hsl'
-      @type += "a" if @a = matchData[4]
-    else throw "Color string is not approriate."
-    this.__normalizeValues()
-
-  __setObjectValue: (obj) ->
-    if obj.hasOwnProperty('r') && obj.hasOwnProperty('g') && obj.hasOwnProperty('b')
-      @r = obj['r']; @g = obj['g']; @b = obj['b']; @type = 'rgb'
-      if obj.hasOwnProperty('a')
-        @type += "a"; @a = obj['a']
-    else if obj.hasOwnProperty('red') && obj.hasOwnProperty('green') && obj.hasOwnProperty('blue')
-      @r = obj['red']; @g = obj['green']; @b = obj['blue']; @type = 'rgb'
-      if obj.hasOwnProperty('alpha')
-        @type += "a"; @a = obj['alpha']
-    else if obj.hasOwnProperty('h') && obj.hasOwnProperty('s') && obj.hasOwnProperty('l')
-      @h = obj['h']; @s = obj['s']; @l = obj['l']; @type = 'hsl'
-      if obj.hasOwnProperty('a')
-        @type += "a"; @a = obj['a']
-    else if obj.hasOwnProperty('hue') && obj.hasOwnProperty('saturation') && obj.hasOwnProperty('lightness')
-      @h = obj['hue']; @s = obj['saturation']; @l = obj['lightness']; @type = 'hsl'
-      if obj.hasOwnProperty('alpha')
-        @type += "a"; @a = obj['alpha']
-    else throw "Color object is not approriate."
-    this.__normalizeValues()
-
-  __normalizeValues: () ->
-    if (@type == 'hex') || (@type == 'abbr')
-      @r = this.__convert(@r, @type, "number")
-      @g = this.__convert(@g, @type, "number")
-      @b = this.__convert(@b, @type, "number")
+  __figureOutType: (obj) ->
+    if obj['lightness']
+      return 'hsl'
+    else if obj['brightness']
+      return 'hsb'
+    else if obj['red']
+      return 'rgb'
+    else if obj['cyan']
+      return 'cmyk'
+    else if obj['hex']
+      this.__parseHex()
+      return 'rgb'
     else
-      @r = this.__convert(@r, "rgb", "number") if @r
-      @g = this.__convert(@g, "rgb", "number") if @g
-      @b = this.__convert(@b, "rgb", "number") if @b
-      @a = this.__convert(@a, "rgb", "number") if @a
-      @h = this.__convert(@h, "rgb", "number") if @h
-      @s = this.__convert(@s, "hsl", "number") if @s
-      @l = this.__convert(@l, "hsl", "number") if @l
+      throw new CB.ArgumentError "Wrong arguments passed to CB.Color \
+       constructor."
 
-  __convertHash:
-    hex:
-      number: (value) ->
-        parseInt(value, 16)
-    abbr:
-      number: (value) ->
-        parseInt(value + value, 16)
-    rgb:
-      number: (value) ->
-        return value if typeof value is 'number'
-        parseFloat(value)
-    hsl:
-      number: (value) ->
-        return value if typeof value is 'number'
-        parseFloat(value) / 100.0
-    number:
-      hex: (value) ->
-        retVal = value.toString(16).toUpperCase()
-        return "0" + retVal if retVal.length < 2
-        return retVal
-      abbr: (value) ->
-        return "0" # TODO: ROUND
-      rgb: (value) ->
-        value + ''
-      hsl: (value) ->
-        (value * 100.0) + '%'
+  __parseHex: () ->
+    hexString = @__obj['hex']
+    newObj = {}
+    newObj.alpha = @alpha
+    mat = hexString.match(/([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})/)
+    r = mat[1]; g = mat[2]; b = mat[3]
+    r = parseInt(r, 16); g = parseInt(g, 16); b = parseInt(b, 16)
+    newObj['red'] = r
+    newObj['green'] = g
+    newObj['blue'] = b
+    @__obj = newObj
+    return
 
-  __convert: (value, from_type, to_type) ->
-    this.__convertHash[from_type][to_type](value)
+  @property "readonly", "alpha",
+    get: -> @__obj.alpha ? 1.0
 
-  # Algorithm from https://github.com/harthur/color-convert/blob/master/conversions.js#L198
-  `Color.prototype.__calculateRGB = function(){
-    var h, s, l, t1, t2, t3, rgb;
-    h = this.h / 360.0;
-    s = this.s;
-    l = this.l;
-    if (s == 0) {
-      val = l * 255;
-      this.r = this.g = this.b = val;
-      return;
-    }
-    if (l < 0.5) {
-      t2 = l * (1 + s);
-    } else {
-      t2 = l + s - l * s;
-    }
-    t1 = 2 * l - t2;
-    rgb = [0, 0, 0];
-    for (var i = 0; i < 3; i++) {
-      t3 = h + 1 / 3 * - (i - 1);
-      t3 < 0 && t3++;
-      t3 > 1 && t3--;
+  @property "readonly", "red",
+    get: -> this.__rgb('red')
 
-      if (6 * t3 < 1)
-        val = t1 + (t2 - t1) * 6 * t3;
-      else if (2 * t3 < 1)
-        val = t2;
-      else if (3 * t3 < 2)
-        val = t1 + (t2 - t1) * (2 / 3 - t3) * 6;
-      else
-        val = t1;
+  @property "readonly", "green",
+    get: -> this.__rgb('green')
 
-      rgb[i] = val * 255;
-    }
-    this.r = Math.round(rgb[0]);
-    this.g = Math.round(rgb[1]);
-    this.b = Math.round(rgb[2]);
-  }`
+  @property "readonly", "blue",
+    get: -> this.__rgb('blue')
 
-  # Algorithm from https://github.com/harthur/color-convert/blob/master/conversions.js#L59
-  __calculateHSL: () ->
-    [r, g, b] = [@r / 255.0, @g / 255.0, @b / 255.0]
-    min = Math.min(r, g, b)
+  @property "readonly", "hslHue",
+    get: -> this.__hsl('hue')
+
+  @property "readonly", "hslSaturation",
+    get: -> this.__hsl('saturation')
+
+  @property "readonly", "hslLightness",
+    get: -> this.__hsl('lightness')
+
+  @property "readonly", "hsbHue",
+    get: -> this.__hsb('hue')
+
+  @property "readonly", "hsbSaturation",
+    get: -> this.__hsb('saturation')
+
+  @property "readonly", "hsbBrightness",
+    get: -> this.__hsb('brightness')
+
+  @property "readonly", "cyan",
+    get: -> this.__cmyk('cyan')
+
+  @property "readonly", "magenta",
+    get: -> this.__cmyk('magenta')
+
+  @property "readonly", "yellow",
+    get: -> this.__cmyk('yellow')
+
+  @property "readonly", "key",
+    get: -> this.__cmyk('key')
+
+  __rgb: (component) ->
+    if @__type == 'rgb'
+      return @__obj[component]
+    return this['__' + @__type + 'to' + 'rgb']()[component]
+
+  __hsl: (component) ->
+    if @__type == 'hsl'
+      return @__obj[component]
+    return this['__' + @__type + 'to' + 'hsl']()[component]
+
+  __hsb: (component) ->
+    if @__type == 'hsb'
+      return @__obj[component]
+    return this['__' + @__type + 'to' + 'hsb']()[component]
+
+  __cmyk: (component) ->
+    if @__type == 'cmyk'
+      return @__obj[component]
+    return this['__' + @__type + 'to' + 'cmyk']()[component]
+
+  toCss: (format) ->
+    switch format
+      when 'hex'
+        return this.__rgbtohex()
+      when 'rgba'
+        return this.__cssrgba()
+      when 'hsla'
+        return this.__csshsla()
+
+  # Algorithm from https://gist.github.com/abachman/3716319
+  __rgbtohsl: ->
+    [r, g, b] = @__obj.valuesAt('red', 'green', 'blue').map (v) -> v /= 255.0
+
     max = Math.max(r, g, b)
-    delta = max - min
+    min = Math.min(r, g, b)
+
+    l = (max + min) / 2
+
+    if max == min
+      h = s = 0
+    else
+      d = max - min
+      s = if l > 0.5 then d / (2 - max - min) else d / (max + min)
+
+      switch max
+        when r
+          h = (g - b) / d + (if g < b then 6 else 0)
+        when g
+          h = (b - r) / d + 2
+        when b
+          h = (r - g) / d + 4
+
+      h /= 6
+
+    hue: Math.floor(h * 360), saturation: s, lightness: l
+
+  __hsltorgb: ->
+    [h, s, l] = @__obj.valuesAt('hue', 'saturation', 'lightness')
+    h /= 360
+
+    if s == 0
+      r = g = b = l
+    else
+      hue2rgb = (p, q, t) ->
+        if t < 0 then t += 1
+        if t > 1 then t -= 1
+        if t < 1/6 then return p + (q - p) * 6 * t
+        if t < 1/2 then return q
+        if t < 2/3 then return p + (q - p) * (2/3 - t) * 6
+        return p
+
+      q = if l < 0.5 then l * (1 + s) else l + s - l * s
+      p = 2 * l - q
+      r = hue2rgb(p, q, h + 1/3)
+      g = hue2rgb(p, q, h)
+      b = hue2rgb(p, q, h - 1/3)
+
+      r = Math.floor(r * 255)
+      g = Math.floor(g * 255)
+      b = Math.floor(b * 255)
+    red: r, green: g, blue: b
+
+  __hsltohsb: ->
+    [h, s, l] = @__obj.valuesAt('hue', 'saturation', 'lightness')
+    s *= 100
+    l *= 100
+
+    t = s * (if l < 50 then l else 100 - l) / 100
+    H = h
+    S = 200 * t / (l + t)
+    V = t + l
+
+    S = 0 if isNaN(S)
+
+    S /= 100
+    V /= 100
+
+    hue: H, saturation: S, brightness: V
+
+  __hsbtohsl: ->
+    [h, s, v] = @__obj.valuesAt('hue', 'saturation', 'brightness')
+    s *= 100
+    v *= 100
+
+    l = (2 - s / 100) * v / 2
+
+    H = h
+    S = s * v / (if l < 50 then l * 2 else 200 - l * 2)
+    L = l
+
+    S = 0 if isNaN(s)
+
+    S /= 100
+    L /= 100
+
+    hue: H, saturation: S, lightness: L
+
+  __rgbtohsb: ->
+    [r, g, b] = @__obj.valuesAt('red', 'green', 'blue').map (i) -> i /= 255.0
+    max = Math.max(r, g, b)
+    min = Math.min(r, g, b)
+
+    h = s = v = max
+    d = max - min
+    s = if max == 0 then 0 else d / max
+
     if max == min
       h = 0
-    else if r == max
-      h = (g - b) / delta
-    else if g == max
-      h = 2 + (b - r) / delta
-    else if b == max
-      h = 4 + (r - g)/ delta
-    h = Math.min(h * 60, 360)
-    h += 360 if h < 0
-    l = (min + max) / 2
-    if max == min
-      s = 0
-    else if l <= 0.5
-      s = delta / (max + min)
     else
-      s = delta / (2 - max - min)
-    @h = Math.round(h)
-    @s = Math.round(s * 100.0) / 100.0
-    @l = Math.round(l * 100.0) / 100.0
+      switch max
+        when r
+          h = (g - b) / d + (if g < b then 6 else 0)
+        when g
+          h = (b - r) / d + 2
+        when b
+          h = (r - g) / d + 4
 
-  __calculateAlpha: () ->
-    if !this.hasOwnProperty('a')
-      @a = 1
+      h /= 6
 
-  red: (presentationOrValue = null) ->
-    @__calculateRGB() if !this.hasOwnProperty('r')
-    if !presentationOrValue
-      return @r
-    if presentationOrValue == "string"
-      return @r + ""
-    if presentationOrValue == "number"
-      return @r
-    @r = parseInt(presentationOrValue)
-    @__calculateHSL() if this.hasOwnProperty('h')
-  green: (presentationOrValue = null) ->
-    @__calculateRGB() if !this.hasOwnProperty('g')
-    if !presentationOrValue
-      return @g
-    if presentationOrValue == "string"
-      return @g + ""
-    if presentationOrValue == "number"
-      return @g
-    @g = parseInt(presentationOrValue)
-    @__calculateHSL() if this.hasOwnProperty('h')
-  blue: (presentationOrValue = null) ->
-    @__calculateRGB() if !this.hasOwnProperty('b')
-    if !presentationOrValue
-      return @b
-    if presentationOrValue == "string"
-      return @b + ""
-    if presentationOrValue == "number"
-      return @b
-    @b = parseInt(presentationOrValue)
-    @__calculateHSL() if this.hasOwnProperty('h')
-  hue: (presentationOrValue = null) ->
-    @__calculateHSL() if !this.hasOwnProperty('h')
-    if !presentationOrValue
-      return @h
-    if presentationOrValue == "string"
-      return @h + ""
-    if presentationOrValue == "number"
-      return @h
-    @h = parseInt(presentationOrValue)
-    @__calculateRGB() if this.hasOwnProperty('r')
-  saturation: (presentationOrValue = null) ->
-    @__calculateHSL() if !this.hasOwnProperty('s')
-    if !presentationOrValue
-      return @s
-    if presentationOrValue == "number"
-      return @s
-    if presentationOrValue == "string"
-      return @s * 100 + '%'
-    if typeof presentationOrValue == 'number'
-      @s = presentationOrValue
-      @__calculateRGB() if this.hasOwnProperty('r')
-      return
-    if presentationOrValue.match(CB.Color.__rF)
-      @s = parseFloat(presentationOrValue)
-      @__calculateRGB() if this.hasOwnProperty('r')
-      return
-    if presentationOrValue.match(CB.Color.__rI)
-      @s = parseInt(presentationOrValue) / 100.0
-      @__calculateRGB() if this.hasOwnProperty('r')
-      return
-    if presentationOrValue.match(CB.Color.__rP)
-      @s = parseInt(presentationOrValue) / 100.0
-      @__calculateRGB() if this.hasOwnProperty('r')
-      return
-  lightness: (presentationOrValue = null) ->
-    @__calculateHSL() if !this.hasOwnProperty('l')
-    if !presentationOrValue
-      return @l
-    if presentationOrValue == "number"
-      return @l
-    if presentationOrValue == "string"
-      return @l * 100 + '%'
-    if typeof presentationOrValue == 'number'
-      @l = presentationOrValue
-      @__calculateRGB() if this.hasOwnProperty('r')
-      return
-    if presentationOrValue.match(CB.Color.__rF)
-      @l = parseFloat(presentationOrValue)
-      @__calculateRGB() if this.hasOwnProperty('r')
-      return
-    if presentationOrValue.match(CB.Color.__rI)
-      @l = parseInt(presentationOrValue) / 100.0
-      @__calculateRGB() if this.hasOwnProperty('r')
-      return
-    if presentationOrValue.match(CB.Color.__rP)
-      @l = parseInt(presentationOrValue) / 100.0
-      @__calculateRGB() if this.hasOwnProperty('r')
-      return
-  alpha: (presentationOrValue = null) ->
-    @__calculateAlpha() if !this.hasOwnProperty('a')
-    if !presentationOrValue
-      return @a
-    if presentationOrValue == "string"
-      return @a + ''
-    if presentationOrValue == "number"
-      return @a
-    @a = parseFloat(presentationOrValue)
+    hue: Math.floor(h * 360), saturation: s, brightness: v
 
-  # TODO: Add more manipulation methods
+  __hsbtorgb: ->
+    [h, s, v] = @__obj.valuesAt('hue', 'saturation', 'brightness')
+    h = h / 360 * 6
 
-  toString: () ->
-    switch @type
-      when "hex"
-        this.toHexString()
-      when "abbr"
-        this.toHexString()
-      when "hsl"
-        this.toHSLString()
-      when "hsla"
-        this.toHSLAString()
-      when "rgb"
-        this.toRGBString()
-      when "rgba"
-        this.toRGBAString()
+    i = Math.floor(h)
+    f = h - i
+    p = v * (1 - s)
+    q = v * (1 - f * s)
+    t = v * (1 - (1 - f) * s)
+    mod = i % 6
+    r = [v, q, p, p, t, v][mod]
+    g = [t, v, v, q, p, p][mod]
+    b = [p, p, t, v, v, q][mod]
 
-  toHSLAString: (useHSLIfPossible = false) ->
-    this.__calculateHSL() if !this.hasOwnProperty('h')
-    if useHSLIfPossible && (!@a || @a >= 1.0) # BUG
-      return "hsl(" + @__convert(@h, "number", "rgb") + ", " + @__convert(@s, "number", "hsl") + ", " + @__convert(@l, "number", "hsl") + ")"
-    if @a # BUG
-      a = @a
-    else
-      a = 1
-    return "hsla(" + @__convert(@h, "number", "rgb") + ", " + @__convert(@s, "number", "hsl") + ", " + @__convert(@l, "number", "hsl") + ", " + a + ")"
+    r = Math.floor(r * 255)
+    g = Math.floor(g * 255)
+    b = Math.floor(b * 255)
 
-  toRGBAString: (useRGBIfPossible = false) ->
-    this.__calculateRGB() if !this.hasOwnProperty('r')
-    if useRGBIfPossible && (!@a || @a >= 1.0) # BUG
-      return "rgb(" + @__convert(@r, "number", "rgb") + ", " + @__convert(@g, "number", "rgb") + ", " + @__convert(@b, "number", "rgb") + ")"
-    if @a
-      a = @a
-    else
-      a = 1
-    return "rgba(" + @__convert(@r, "number", "rgb") + ", " + @__convert(@g, "number", "rgb") + ", " + @__convert(@b, "number", "rgb") + ", " + a + ")"
+    red: r, green: g, blue: b
 
-  toHSLString: () ->
-    this.toHSLAString(true)
+  __rgbtocmyk: ->
+  __cmyktorgb: ->
 
-  toRGBString: () ->
-    this.toRGBAString(true)
+  __hsltocmyk: ->
+  __cmyktohsl: ->
 
-  toHexString: (neverFallBackIfHasAlpha = false) ->
-    if (!neverFallBackIfHasAlpha) && @a && (@a < 1.0) # BUG
-      if this.hasOwnProperty('r')
-        return this.toRGBAString()
-      else if this.hasOwnProperty('h')
-        return this.toHSLAString()
-    this.__calculateRGB() if !@r
-    "#" + @__convert(@r, "number", "hex") + @__convert(@g, "number", "hex") + @__convert(@b, "number", "hex")
+  __hsbtocmyk: ->
+  __cmyktohsb: ->
+
+  __rgbtohex: ->
+    ret = '#'
+    ret += this.__fixformat Math.floor(@red).toString(16)
+    ret += this.__fixformat Math.floor(@green).toString(16)
+    ret += this.__fixformat Math.floor(@blue).toString(16)
+    ret
+
+  __fixformat: (s) ->
+    if s.length == 1
+      s = '0' + s
+    return s.toUpperCase()
+
+  __cssrgba: ->
+    "rgba(#{@red}, #{@green}, #{@blue}, #{@alpha});"
+
+  __csshsla: ->
+    "hsla(#{@hslHue}, #{@hslSaturation * 100}%, #{@hslLightness * 100}%, \
+     #{@alpha});"

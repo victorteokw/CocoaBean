@@ -31,3 +31,10 @@ Object::respondsTo = (methodName) ->
   else return false
 
 Object.provided Copyable
+
+Object::valuesAt = () ->
+  args = Array.prototype.slice.call(arguments)
+  retVal = []
+  for arg in args
+    retVal.push(this[arg])
+  return retVal

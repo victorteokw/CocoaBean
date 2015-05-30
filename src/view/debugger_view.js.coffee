@@ -3,9 +3,9 @@ class CB.DebuggerView extends CB.View
   constructor: (frame) ->
     super(frame)
     @listView = new CB.View
-    @listView.backgroundColor = "#99CCFF"
+    @listView.backgroundColor = new CB.Color(hex: "#99CCFF")
     @bodyView = new CB.LabelView
-    @bodyView.backgroundColor = "#FFCC99"
+    @bodyView.backgroundColor = new CB.Color(hex: "#FFCC99")
     @closeButton = new CB.TextButton
     @closeButton.labelView.text = "✗"
     @closeButton.labelView.fontSize = 20
