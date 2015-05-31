@@ -14,4 +14,18 @@ describe "CB.Point", ->
     expect(-> @point.y = 30).toThrow()
     expect(@point.y).toBe(40.5)
 
-# Here lacks four specs, somebody want to do it?
+  it "copies", ->
+    newPoint = @point.copy()
+    expect(newPoint).toEqual @point
+
+  it "equals", ->
+    newPoint = new CB.Point(10, 20, 30, 40)
+    expect(newPoint.equals(@point)).toBe true
+    newPoint = new CB.Point(10, 20, 30, 41)
+    expect(newPoint.equals(@point)).toBe false
+
+  it "provided Equalable", ->
+    expect(CB.Point.provides(Equalable)).toBe true
+
+  it "provided Copyable", ->
+    expect(CB.Point.provides(Copyable)).toBe true
