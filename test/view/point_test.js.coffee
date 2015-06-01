@@ -19,9 +19,9 @@ describe "CB.Point", ->
     expect(newPoint).toEqual @point
 
   it "equals", ->
-    newPoint = new CB.Point(10, 20, 30, 40)
+    newPoint = new CB.Point(20.5, 40.5)
     expect(newPoint.equals(@point)).toBe true
-    newPoint = new CB.Point(10, 20, 30, 41)
+    newPoint = new CB.Point(10, 201)
     expect(newPoint.equals(@point)).toBe false
 
   it "provided Equalable", ->
