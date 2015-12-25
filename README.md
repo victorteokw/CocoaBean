@@ -1,5 +1,7 @@
 # CocoaBean
 
+CocoaBean is developing.
+
 ![Logo](https://raw.githubusercontent.com/cheunghy/CocoaBean/master/logo.jpg)
 
 [![Build status](https://travis-ci.org/cheunghy/CocoaBean.svg?branch=master)](https://travis-ci.org/cheunghy/CocoaBean)
