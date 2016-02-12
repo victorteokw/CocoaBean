@@ -172,6 +172,20 @@ class CB.View extends CB.Responder
         @layer.css("overflow", "visible")
       @_clipsToBounds = newValue
 
+  @property "borderWidth",
+    set: (newWidth) ->
+      @_borderWidth = newWidth
+      @css('border-style', 'solid')
+      @css('border-width', newWidth + 'px')
+      @css('box-sizing', 'border-box')
+
+  @property "borderColor",
+    set: (newColor) ->
+      @_borderColor = newColor
+      @css('border-style', 'solid')
+      @css('border-color', newColor.toCss('rgba'))
+      @css('box-sizing', 'border-box')
+
   @property "cornerRadius",
     set: (newRadius) ->
       @_cornerRadius = newRadius

@@ -1,5 +1,8 @@
 class CB.Color
 
+  copy: () ->
+    return new CB.Color(@__obj)
+
   constructor: (obj) ->
     @__obj = obj
     @__type = this.__figureOutType(obj)
@@ -33,8 +36,12 @@ class CB.Color
     @__obj = newObj
     return
 
-  @property "readonly", "alpha",
-    get: -> @__obj.alpha ? 1.0
+  @property "alpha",
+    get: ->
+      if @_alpha
+        @_alpha
+      else
+        @__obj.alpha ? 1.0
 
   @property "readonly", "red",
     get: -> this.__rgb('red')
