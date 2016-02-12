@@ -258,8 +258,8 @@ class CB.Color
     return s.toUpperCase()
 
   __cssrgba: ->
-    "rgba(#{@red}, #{@green}, #{@blue}, #{@alpha});"
+    "rgba(#{@red}, #{@green}, #{@blue}, #{@alpha})"
 
   __csshsla: ->
     "hsla(#{@hslHue}, #{@hslSaturation * 100}%, #{@hslLightness * 100}%, \
-     #{@alpha});"
+     #{@alpha})"

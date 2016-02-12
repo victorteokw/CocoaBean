@@ -150,7 +150,7 @@ class CB.View extends CB.Responder
     set: (newColor) ->
       @_backgroundColor = newColor
       colorString = newColor.toCss('rgba')
-      @css("background-color", colorString)
+      @layer.css("background-color", colorString)
 
   @property "transform" # Future implementation
 
