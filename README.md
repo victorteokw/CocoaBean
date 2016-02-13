@@ -91,5 +91,6 @@ There are a lot of works should be done, just take it freely!
 You may join the discussion at anytime!
 
 ## A sample CocoaBean application
-[chess game](https://github.com/cheunghy/chess)
-![Screen shot](https://raw.githubusercontent.com/cheunghy/CocoaBean/master/sshot.png)
+CHESS GAME!
+[PLAY HERE!](http://www.cheunghoiyu.com/chess)
+Source code here: [chess game](https://github.com/cheunghy/chess)
