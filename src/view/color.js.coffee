@@ -8,15 +8,15 @@ class CB.Color
     @__type = this.__figureOutType(obj)
 
   __figureOutType: (obj) ->
-    if obj['lightness']
+    if obj['lightness'] != undefined
       return 'hsl'
-    else if obj['brightness']
+    else if obj['brightness'] != undefined
       return 'hsb'
-    else if obj['red']
+    else if obj['red'] != undefined
       return 'rgb'
-    else if obj['cyan']
+    else if obj['cyan'] != undefined
       return 'cmyk'
-    else if obj['hex']
+    else if obj['hex'] != undefined
       this.__parseHex()
       return 'rgb'
     else
