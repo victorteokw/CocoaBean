@@ -42,7 +42,10 @@ class CB.LabelView extends CB.View
   @property "textColor",
     set: (newTextColor) ->
       @_textColor = newTextColor
-      @css("color", newTextColor)
+      if newTextColor.class == CB.Color
+        @css("color", newTextColor.toCss('rgba'))
+      else
+        @css("color", newTextColor)
 
   @property "textAlignment",
     set: (newValue) ->
