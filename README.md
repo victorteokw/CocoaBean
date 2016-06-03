@@ -1,6 +1,10 @@
 # CocoaBean
 
+Thanks for paying attention. 
+
 CocoaBean is not developing anymore. It's core concepts are antiquated. Please consider functional programming, react and react native, flux architecture for similar stuff.
+
+However, this project is interesting. Feel free to try it out.
 
 ## Original Description
 
